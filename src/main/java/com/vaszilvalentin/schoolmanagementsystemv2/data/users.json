@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "name": "John Doe",
+    "email": "johndoe@email.com",
+    "age": 16,
+    "role": "student",
+    "grade": "10th Grade"
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "email": "janesmith@email.com",
+    "age": 17,
+    "role": "student",
+    "grade": "11th Grade"
+  },
+  {
+    "id": "3",
+    "name": "Alice Johnson",
+    "email": "alicejohnson@email.com",
+    "age": 40,
+    "role": "admin",
+    "department": "Administration"
+  }
+]

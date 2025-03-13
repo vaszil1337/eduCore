@@ -1,4 +1,9 @@
+com/vaszilvalentin/schoolmanagementsystemv2/data/Database.class
 com/vaszilvalentin/schoolmanagementsystemv2/Main.class
+com/vaszilvalentin/schoolmanagementsystemv2/users/UserManager$1.class
 com/vaszilvalentin/schoolmanagementsystemv2/pages/HomePage.class
 com/vaszilvalentin/schoolmanagementsystemv2/window/WindowManager.class
+com/vaszilvalentin/schoolmanagementsystemv2/users/User.class
+com/vaszilvalentin/schoolmanagementsystemv2/users/UserManager.class
+com/vaszilvalentin/schoolmanagementsystemv2/data/Database$1.class
 com/vaszilvalentin/schoolmanagementsystemv2/pages/SettingsPage.class

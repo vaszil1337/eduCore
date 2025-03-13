@@ -1,4 +1,7 @@
-/Users/vaszilvalentin/NetBeansProjects/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/Main.java
-/Users/vaszilvalentin/NetBeansProjects/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/pages/HomePage.java
-/Users/vaszilvalentin/NetBeansProjects/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/pages/SettingsPage.java
-/Users/vaszilvalentin/NetBeansProjects/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/window/WindowManager.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/Main.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/Database.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/pages/HomePage.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/pages/SettingsPage.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/users/User.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/users/UserManager.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/window/WindowManager.java
