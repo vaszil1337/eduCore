@@ -13,6 +13,7 @@ public class User {
     private String id;
     private String name;
     private String email;
+    private String password;
     private int age; // Optional, can be used for students
     private String role; // "student", "teacher", or "admin"
     private String grade; // Optional, for students
@@ -30,6 +31,14 @@ public class User {
         this.department = department;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
     public String getEmail() {
         return email;
     }

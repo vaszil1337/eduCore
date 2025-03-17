@@ -2,25 +2,28 @@
   {
     "id": "1",
     "name": "John Doe",
-    "email": "johndoe@email.com",
+    "email": "john.doe@example.com",
+    "password": "EEWj1i8U58VCUlrv0IzVUA\u003d\u003d",
     "age": 16,
     "role": "student",
     "grade": "10th Grade"
   },
   {
     "id": "2",
-    "name": "Jane Smith",
-    "email": "janesmith@email.com",
-    "age": 17,
+    "name": "Em Il",
+    "email": "emil@example.com",
+    "password": "CPoiugsrm106hEUAWolgCw\u003d\u003d",
+    "age": 16,
     "role": "student",
-    "grade": "11th Grade"
+    "grade": "10th Grade"
   },
   {
     "id": "3",
-    "name": "Alice Johnson",
-    "email": "alicejohnson@email.com",
-    "age": 40,
-    "role": "admin",
-    "department": "Administration"
+    "name": "Emillaaa Ilaaa",
+    "email": "emiaal@example.com",
+    "password": "OydqVHNDzyRcd4AeklvD3w\u003d\u003d",
+    "age": 32,
+    "role": "teacher",
+    "subject": "History"
   }
 ]

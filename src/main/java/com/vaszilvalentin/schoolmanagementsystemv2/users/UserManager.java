@@ -10,6 +10,8 @@ package com.vaszilvalentin.schoolmanagementsystemv2.users;
  */
 import com.google.gson.reflect.TypeToken;
 import com.vaszilvalentin.schoolmanagementsystemv2.data.Database;
+import com.vaszilvalentin.schoolmanagementsystemv2.utils.EncryptionUtils;
+import com.vaszilvalentin.schoolmanagementsystemv2.utils.PasswordUtils;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,21 @@ public class UserManager {
         // Increment the maximum ID by 1
         return String.valueOf(maxId + 1);
     }
+    
+    private static String generatePassword() {
+        String plainPassword = PasswordUtils.generatePassword(12); // 12-character password
+        System.out.println("Generated password: " + plainPassword);
+
+        // Encrypt the password
+        String encryptedPassword = EncryptionUtils.encrypt(plainPassword);
+        return encryptedPassword;
+    }
+    
+    // Verify a user's password
+    public static boolean verifyPassword(User user, String inputPassword) {
+        String decryptedPassword = EncryptionUtils.decrypt(user.getPassword());
+        return decryptedPassword.equals(inputPassword);
+    }
 
     // Check if a user with the given ID already exists
     public static boolean userExists(String id, String email) {
@@ -48,6 +65,7 @@ public class UserManager {
     public static void addUser(User user) {
         List<User> users = Database.loadUsers();
         user.setId(generateNextId());
+        user.setPassword(generatePassword());
         users.add(user);
         Database.saveUsers(users);
     }

@@ -4,4 +4,7 @@
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/pages/SettingsPage.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/users/User.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/users/UserManager.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/utils/EncryptionUtils.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/utils/PDFExporter.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/utils/PasswordUtils.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/window/WindowManager.java
