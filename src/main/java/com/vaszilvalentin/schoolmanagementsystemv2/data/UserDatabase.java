@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Database {
+public class UserDatabase {
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final String USERS_FILE = "src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/users.json";
