@@ -8,6 +8,7 @@ package com.vaszilvalentin.schoolmanagementsystemv2.data;
  *
  * @author vaszilvalentin
  */
+import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class UserDatabase {
 
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson gson = Converters.registerAll(new GsonBuilder()).setPrettyPrinting().create();
     private static final String USERS_FILE = "src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/users.json";
 
     // Ensure the file exists and is initialized with an empty JSON array

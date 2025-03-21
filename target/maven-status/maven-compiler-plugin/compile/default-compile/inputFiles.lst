@@ -2,7 +2,10 @@
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/certificates/AbsenceCertificate.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/certificates/AbsenceCertificateManager.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/AbsenceCertificateDatabase.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/HomeworkDatabase.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/UserDatabase.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/homeworks/Homework.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/homeworks/HomeworkManager.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/pages/HomePage.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/pages/SettingsPage.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/users/User.java

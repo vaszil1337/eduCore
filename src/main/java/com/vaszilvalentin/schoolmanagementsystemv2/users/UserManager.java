@@ -54,14 +54,14 @@ public class UserManager {
     public static boolean userExists(String id, String email) {
     List<User> users = UserDatabase.loadUsers();
     for (User user : users) {
-        if (user.getId().equals(id) || user.getName().equalsIgnoreCase(email)) {
-            return true; // User with the same ID or name exists
+        if (user.getId().equals(id) || user.getEmail().equals(email)) {
+            return true; // User with the same ID or email exists
         }
     }
     return false; // User does not exist
 }
 
-    // Add a new user (with duplicate check)
+    // Add a new user
     public static void addUser(User user) {
         List<User> users = UserDatabase.loadUsers();
         user.setId(generateNextId());

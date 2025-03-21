@@ -13,8 +13,9 @@ import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.vaszilvalentin.schoolmanagementsystemv2.certificates.AbsenceCertificate;
+import com.vaszilvalentin.schoolmanagementsystemv2.homeworks.Homework;
 import java.io.File;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,12 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class AbsenceCertificateDatabase {
+public class HomeworkDatabase {
     private static final Gson gson = Converters.registerAll(new GsonBuilder()).setPrettyPrinting().create();
-    private static final String CERTIFICATES_FILE = "src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/certificates.json";
+    private static final String HOMEWORK_FILE = "src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/homeworks.json";
 
     private static void ensureFileExists() {
-        File file = new File(CERTIFICATES_FILE);
+        File file = new File(HOMEWORK_FILE);
         if (!file.exists()) {
             try {
                 file.getParentFile().mkdirs();
@@ -41,28 +42,29 @@ public class AbsenceCertificateDatabase {
             }
         }
     }
-
-    public static void saveCertificates(List<AbsenceCertificate> certificates) {
+    
+    // Save all homework assignments to the JSON file
+    public static void saveHomework(List<Homework> homeworkList) {
         ensureFileExists();
-        try (FileWriter writer = new FileWriter(CERTIFICATES_FILE)) {
-            gson.toJson(certificates, writer);
+        try (FileWriter writer = new FileWriter(HOMEWORK_FILE)) {
+            gson.toJson(homeworkList, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static List<AbsenceCertificate> loadCertificates() {
+    // Load all homework assignments from the JSON file
+    public static List<Homework> loadHomework() {
         ensureFileExists();
-        try (FileReader reader = new FileReader(CERTIFICATES_FILE)) {
-            Type certificateListType = new TypeToken<ArrayList<AbsenceCertificate>>() {}.getType();
-            return gson.fromJson(reader, certificateListType);
+        try (FileReader reader = new FileReader(HOMEWORK_FILE)) {
+            Type homeworkListType = new TypeToken<ArrayList<Homework>>() {}.getType();
+            return gson.fromJson(reader, homeworkListType);
         } catch (IOException e) {
-            return new ArrayList<>();
+            return new ArrayList<>(); // Return an empty list if the file doesn't exist
         }
     }
-
-    public static String generateCertificateId() {
+    
+    public static String generateHomeworkId() {
         return UUID.randomUUID().toString();
     }
 }
-
