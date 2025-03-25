@@ -26,7 +26,7 @@ import java.util.UUID;
 
 public class HomeworkDatabase {
     private static final Gson gson = Converters.registerAll(new GsonBuilder()).setPrettyPrinting().create();
-    private static final String HOMEWORK_FILE = "src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/homeworks.json";
+    private static final String HOMEWORK_FILE = "data/homeworks.json";
 
     private static void ensureFileExists() {
         File file = new File(HOMEWORK_FILE);

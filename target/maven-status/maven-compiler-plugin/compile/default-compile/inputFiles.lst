@@ -1,4 +1,6 @@
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/Main.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/auth/AuthManager.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/auth/CurrentUser.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/certificates/AbsenceCertificate.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/certificates/AbsenceCertificateManager.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/AbsenceCertificateDatabase.java
@@ -7,7 +9,11 @@
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/homeworks/Homework.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/homeworks/HomeworkManager.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/pages/HomePage.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/pages/LandingPage.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/pages/LoginPage.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/pages/SettingsPage.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/preference/PreferenceManager.java
+/Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/preference/Theme.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/users/User.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/users/UserManager.java
 /Users/vaszilvalentin/Documents/GitHub/SchoolManagementSystemV2/src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/utils/EncryptionUtils.java

@@ -25,7 +25,7 @@ import java.util.UUID;
 
 public class AbsenceCertificateDatabase {
     private static final Gson gson = Converters.registerAll(new GsonBuilder()).setPrettyPrinting().create();
-    private static final String CERTIFICATES_FILE = "src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/certificates.json";
+    private static final String CERTIFICATES_FILE = "data/certificates.json";
 
     private static void ensureFileExists() {
         File file = new File(CERTIFICATES_FILE);

@@ -24,7 +24,7 @@ import java.util.List;
 public class UserDatabase {
 
     private static final Gson gson = Converters.registerAll(new GsonBuilder()).setPrettyPrinting().create();
-    private static final String USERS_FILE = "src/main/java/com/vaszilvalentin/schoolmanagementsystemv2/data/users.json";
+    private static final String USERS_FILE = "data/users.json";
 
     // Ensure the file exists and is initialized with an empty JSON array
     private static void ensureFileExists() {
