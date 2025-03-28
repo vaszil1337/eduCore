@@ -16,6 +16,7 @@ import com.vaszilvalentin.educore.pages.HomePage;
 import com.vaszilvalentin.educore.pages.LandingPage;
 import com.vaszilvalentin.educore.pages.LoginPage;
 import com.vaszilvalentin.educore.pages.SettingsPage;
+import com.vaszilvalentin.educore.pages.subpages.PasswordUpdate;
 import com.vaszilvalentin.educore.preference.PreferenceManager;
 import com.vaszilvalentin.educore.preference.Theme;
 
@@ -52,7 +53,6 @@ public class WindowManager {
         // macOS-specific window settings
         if (SystemInfo.isMacOS) {
             // Set the window title bar appearance for macOS
-            frame.getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
             frame.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
         }
 
@@ -144,6 +144,8 @@ public class WindowManager {
                 return new LoginPage(this);
             case "Home":
                 return new HomePage(this);
+            case "PasswordUpdate":
+                return new PasswordUpdate(this);
             default:
                 throw new IllegalArgumentException("Unknown page: " + pageName);
         }

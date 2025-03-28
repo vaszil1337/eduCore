@@ -12,6 +12,7 @@
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/pages/LandingPage.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/pages/LoginPage.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/pages/SettingsPage.java
+/Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/pages/subpages/PasswordUpdate.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/preference/PreferenceManager.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/preference/Theme.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/users/User.java

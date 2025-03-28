@@ -14,10 +14,12 @@ public class HomePage extends JPanel {
 
         // Check if a user is logged in
         if (CurrentUser.isLoggedIn()) {
-            User currentUser = CurrentUser.getCurrentUser();
-            JLabel welcomeLabel = new JLabel("Welcome, " + currentUser.getName() + "!", SwingConstants.CENTER);
-            welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            add(welcomeLabel, BorderLayout.NORTH);
+            JButton settingsBtn = new JButton("Settings");
+            settingsBtn.addActionListener(l -> {
+                windowManager.switchToPage("Settings");
+            });
+            add(settingsBtn, BorderLayout.CENTER);
+            
         } else {
             JLabel messageLabel = new JLabel("No user logged in.", SwingConstants.CENTER);
             messageLabel.setFont(new Font("Arial", Font.PLAIN, 18));
