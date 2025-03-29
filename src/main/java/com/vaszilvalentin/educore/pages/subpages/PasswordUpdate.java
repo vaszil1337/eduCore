@@ -4,7 +4,13 @@
  */
 package com.vaszilvalentin.educore.pages.subpages;
 
+import com.vaszilvalentin.educore.auth.CurrentUser;
+import com.vaszilvalentin.educore.users.User;
+import com.vaszilvalentin.educore.users.UserManager;
 import com.vaszilvalentin.educore.window.WindowManager;
+import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -15,8 +21,12 @@ public class PasswordUpdate extends javax.swing.JPanel {
     /**
      * Creates new form PasswordUpdate
      */
+    
+    private final WindowManager windowManager;
+    
     public PasswordUpdate(WindowManager windowManager) {
         initComponents();
+        this.windowManager = windowManager;
     }
 
     /**
@@ -34,15 +44,18 @@ public class PasswordUpdate extends javax.swing.JPanel {
         mainContainer = new javax.swing.JPanel();
         contentPanel = new javax.swing.JPanel();
         centerPanel = new javax.swing.JPanel();
+        gridPanel = new javax.swing.JPanel();
         labelPanel = new javax.swing.JPanel();
         oldLabel = new javax.swing.JLabel();
         newpassLabel = new javax.swing.JLabel();
         confirmLabel = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        oldField = new javax.swing.JPasswordField();
+        newpassField = new javax.swing.JPasswordField();
+        confirmField = new javax.swing.JPasswordField();
+        checkboxPanel = new javax.swing.JPanel();
+        showpassBox = new javax.swing.JCheckBox();
+        sendBtn = new javax.swing.JButton();
         bottomPanel = new javax.swing.JPanel();
         backBtn = new javax.swing.JButton();
 
@@ -64,8 +77,13 @@ public class PasswordUpdate extends javax.swing.JPanel {
 
         centerPanel.setLayout(new java.awt.GridBagLayout());
 
+        gridPanel.setPreferredSize(new java.awt.Dimension(500, 250));
+        gridPanel.setLayout(new java.awt.GridBagLayout());
+
+        labelPanel.setPreferredSize(new java.awt.Dimension(130, 108));
         labelPanel.setLayout(new java.awt.GridBagLayout());
 
+        oldLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         oldLabel.setText("Old Password");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -73,6 +91,7 @@ public class PasswordUpdate extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
         labelPanel.add(oldLabel, gridBagConstraints);
 
+        newpassLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         newpassLabel.setText("New Password");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -81,6 +100,7 @@ public class PasswordUpdate extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
         labelPanel.add(newpassLabel, gridBagConstraints);
 
+        confirmLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         confirmLabel.setText("Confirm New Password");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -92,55 +112,94 @@ public class PasswordUpdate extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.ipadx = 15;
         gridBagConstraints.ipady = 36;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 20, 0);
-        centerPanel.add(labelPanel, gridBagConstraints);
+        gridPanel.add(labelPanel, gridBagConstraints);
 
+        inputPanel.setPreferredSize(new java.awt.Dimension(150, 126));
         inputPanel.setLayout(new java.awt.GridBagLayout());
 
-        jTextField1.setText("jTextField1");
+        oldField.getDocument().addDocumentListener(documentListener);
+        oldField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        oldField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        oldField.setPreferredSize(new java.awt.Dimension(120, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
-        inputPanel.add(jTextField1, gridBagConstraints);
+        inputPanel.add(oldField, gridBagConstraints);
 
-        jTextField2.setText("jTextField2");
+        newpassField.getDocument().addDocumentListener(documentListener);
+        newpassField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        newpassField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        newpassField.setPreferredSize(new java.awt.Dimension(120, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
-        inputPanel.add(jTextField2, gridBagConstraints);
+        inputPanel.add(newpassField, gridBagConstraints);
 
-        jTextField3.setText("jTextField3");
+        confirmField.getDocument().addDocumentListener(documentListener);
+        confirmField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        confirmField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        confirmField.setPreferredSize(new java.awt.Dimension(120, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
-        inputPanel.add(jTextField3, gridBagConstraints);
+        inputPanel.add(confirmField, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.ipadx = 15;
         gridBagConstraints.ipady = 36;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(20, 0, 20, 0);
-        centerPanel.add(inputPanel, gridBagConstraints);
+        gridPanel.add(inputPanel, gridBagConstraints);
+
+        checkboxPanel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        checkboxPanel.setLayout(new java.awt.GridBagLayout());
+
+        showpassBox.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        showpassBox.setText("Show Password");
+        showpassBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showpassBoxActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        checkboxPanel.add(showpassBox, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
+        gridPanel.add(checkboxPanel, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        centerPanel.add(gridPanel, gridBagConstraints);
+
+        sendBtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        sendBtn.setText("Change Password");
+        sendBtn.setEnabled(false);
+        sendBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendBtnActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        centerPanel.add(sendBtn, gridBagConstraints);
 
         contentPanel.add(centerPanel, java.awt.BorderLayout.CENTER);
-
-        jButton1.setText("jButton1");
-        contentPanel.add(jButton1, java.awt.BorderLayout.SOUTH);
 
         mainContainer.add(contentPanel, java.awt.BorderLayout.CENTER);
 
@@ -164,23 +223,75 @@ public class PasswordUpdate extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_backBtnActionPerformed
 
+    private void showpassBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showpassBoxActionPerformed
+        togglePasswordVisibility();
+    }//GEN-LAST:event_showpassBoxActionPerformed
+
+    private void sendBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendBtnActionPerformed
+        User user = CurrentUser.getCurrentUser();
+        boolean updateState = UserManager.updateUserPassword(user.getId(), new String (oldField.getPassword()), new String (newpassField.getPassword()));
+        if(updateState){
+            JOptionPane.showMessageDialog(null, "Password Changed Successfully!");
+            windowManager.switchToPage("Settings");        
+        }else {
+            JOptionPane.showMessageDialog(null, "Incorrect old password!");
+        }
+    }//GEN-LAST:event_sendBtnActionPerformed
+    
+    // Toggle password visibility (show/hide)
+    private void togglePasswordVisibility() {
+        if (showpassBox.isSelected()) {
+            newpassField.setEchoChar((char) 0); // Show password
+        } else {
+            newpassField.setEchoChar('•'); // Hide password
+        }
+    }
+    
+    private void checkFields() {
+        String oldPassword = new String(oldField.getPassword());
+        String newPassword = new String(newpassField.getPassword());
+        String confirmPassword = new String(confirmField.getPassword());
+
+        boolean isEnabled = !oldPassword.isEmpty() && newPassword.equals(confirmPassword) && !newPassword.isEmpty();
+        sendBtn.setEnabled(isEnabled);
+    }
+    
+    DocumentListener documentListener = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                checkFields();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                checkFields();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                checkFields();
+            }
+        };
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
     private javax.swing.JPanel bottomPanel;
     private javax.swing.JPanel centerPanel;
+    private javax.swing.JPanel checkboxPanel;
+    private javax.swing.JPasswordField confirmField;
     private javax.swing.JLabel confirmLabel;
     private javax.swing.JPanel contentPanel;
+    private javax.swing.JPanel gridPanel;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JPanel labelPanel;
     private javax.swing.JPanel mainContainer;
+    private javax.swing.JPasswordField newpassField;
     private javax.swing.JLabel newpassLabel;
+    private javax.swing.JPasswordField oldField;
     private javax.swing.JLabel oldLabel;
     private javax.swing.JLabel passLabel;
+    private javax.swing.JButton sendBtn;
+    private javax.swing.JCheckBox showpassBox;
     private javax.swing.JPanel topContainer;
     // End of variables declaration//GEN-END:variables
 }

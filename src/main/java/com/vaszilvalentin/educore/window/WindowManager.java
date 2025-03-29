@@ -59,6 +59,8 @@ public class WindowManager {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
         frame.add(mainPanel);
+        
+        frame.setJMenuBar(createMenuBar());
 
         // Create and add the initial landing page
         JPanel initialPage = createPage("Landing");
@@ -150,6 +152,32 @@ public class WindowManager {
                 throw new IllegalArgumentException("Unknown page: " + pageName);
         }
     }
+    
+    private JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu settingsMenu = new JMenu("Settings");
+
+        JMenu themeMenu = new JMenu("Theme");
+        JMenuItem lightTheme = new JMenuItem("Light Mode");
+        JMenuItem darkTheme = new JMenuItem("Dark Mode");
+
+        lightTheme.addActionListener(e -> {
+            applyTheme(Theme.LIGHT);
+            PreferenceManager.saveTheme(Theme.LIGHT);
+        });
+        darkTheme.addActionListener(e -> {
+            applyTheme(Theme.DARK);
+            PreferenceManager.saveTheme(Theme.DARK);
+        });
+
+        themeMenu.add(lightTheme);
+        themeMenu.add(darkTheme);
+        settingsMenu.add(themeMenu);
+        menuBar.add(settingsMenu);
+
+        return menuBar;
+    }
+
 
     // Resize components on all pages based on the window size
     private void resizeComponents(Dimension frameSize) {
