@@ -18,7 +18,7 @@ public class User {
     private String password;
     private int age; // Optional, can be used for students
     private String role; // "student", "teacher", or "admin"
-    private String grade; // Optional, for students
+    private String classId; // Optional, for students
     private String subject; // Optional, for teachers
     private String department; // Optional, for admins
     private List<String> taughtClasses;
@@ -30,17 +30,17 @@ public class User {
      * @param email       The email of the user.
      * @param age         The age of the user (optional, used for students).
      * @param role        The role of the user ("student", "teacher", or "admin").
-     * @param grade       The grade of the student (optional).
+     * @param classId       The grade of the student (optional).
      * @param subject     The subject the teacher teaches (optional).
      * @param department  The department of the admin (optional).
      * @param taughtClasses The list of classes the teacher teaches (optional).
      */
-    public User(String name, String email, int age, String role, String grade, String subject, String department, List<String> taughtClasses) {
+    public User(String name, String email, int age, String role, String classId, String subject, String department, List<String> taughtClasses) {
         this.name = name;
         this.email = email;
         this.age = age;
         this.role = role;
-        this.grade = grade;
+        this.classId = classId;
         this.subject = subject;
         this.department = department;
         this.taughtClasses = (taughtClasses != null) ? taughtClasses : new ArrayList<>(); // Ensure it's never null
@@ -96,12 +96,12 @@ public class User {
         this.role = role;
     }
 
-    public String getGrade() {
-        return grade;
+    public String getClassId() {
+        return classId;
     }
 
-    public void setGrade(String grade) {
-        this.grade = grade;
+    public void setClassId(String classId) {
+        this.classId = classId;
     }
 
     public String getSubject() {
@@ -136,7 +136,7 @@ public class User {
                 + ", email='" + email + '\''
                 + ", age=" + age
                 + ", role='" + role + '\''
-                + ", grade='" + grade + '\''
+                + ", classId='" + classId + '\''
                 + ", subject='" + subject + '\''
                 + ", department='" + department + '\''
                 + ", taughtClasses=" + taughtClasses

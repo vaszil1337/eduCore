@@ -1,96 +1,87 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package com.vaszilvalentin.educore.pages;
+
+import com.vaszilvalentin.educore.auth.AuthManager;
+import com.vaszilvalentin.educore.utils.ResizableImage;
+import com.vaszilvalentin.educore.window.WindowManager;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /**
  *
  * @author vaszilvalentin
  */
+public class LoginPage extends javax.swing.JPanel {
 
-import com.vaszilvalentin.educore.auth.AuthManager;
-import com.vaszilvalentin.educore.window.WindowManager;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-public class LoginPage extends JPanel {
-    private JTextField emailField;
-    private JPasswordField passwordField;
-    private JCheckBox showPasswordCheckBox;
-    private JLabel statusLabel;
+    /**
+     * Creates new form LoginPage
+     */
+    WindowManager windowManager;
 
     public LoginPage(WindowManager windowManager) {
-        setLayout(new GridBagLayout()); // Center alignment for the panel
+        this.windowManager = windowManager;
+        initComponents();
 
-        // Create the central panel with vertical layout (BoxLayout)
-        JPanel centerBox = new JPanel();
-        centerBox.setLayout(new BoxLayout(centerBox, BoxLayout.Y_AXIS));
+        // Initialize the theme listener
+        UIManager.addPropertyChangeListener(new ThemeChangeListener());
 
-        // Title label (center-aligned)
-        JLabel titleLabel = new JLabel("Login", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerBox.add(titleLabel);
+        // Set initial color
+        updateContainerColor();
+    }
+    
+    /**
+     * Updates the background color and border of the container
+     * to match the current theme defined in UIManager.
+     */
+    private void updateContainerColor() {
+        container.setBackground(UIManager.getColor("LoginForm.background"));
+        container.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(
+                        UIManager.getColor("Container.borderColor"),
+                        1,
+                        true
+                    ),
+                    BorderFactory.createEmptyBorder(20, 20, 20, 20)
+                ));
+    }
 
-        // Email field
-        JPanel emailPanel = new JPanel();
-        emailPanel.setLayout(new FlowLayout(FlowLayout.LEFT)); // Align left
-        emailPanel.add(new JLabel("Username:"));
-        emailField = new JTextField(15);
-        emailPanel.add(emailField);
-        centerBox.add(emailPanel);
+    /**
+     * Listener that reacts to theme (Look and Feel) changes.
+     */
+    private class ThemeChangeListener implements PropertyChangeListener {
 
-        // Password field
-        JPanel passwordPanel = new JPanel();
-        passwordPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        passwordPanel.add(new JLabel("Password:"));
-        passwordField = new JPasswordField(15);
-        passwordPanel.add(passwordField);
-        centerBox.add(passwordPanel);
-
-        // Show password checkbox
-        showPasswordCheckBox = new JCheckBox("Show Password");
-        showPasswordCheckBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        showPasswordCheckBox.setBackground(new Color(240, 240, 240));
-        showPasswordCheckBox.addActionListener(e -> togglePasswordVisibility());
-        centerBox.add(showPasswordCheckBox);
-
-        // Status label (for error/success messages)
-        statusLabel = new JLabel("", SwingConstants.CENTER);
-        statusLabel.setForeground(Color.RED);
-        statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerBox.add(Box.createVerticalStrut(10)); // Space before status label
-        centerBox.add(statusLabel);
-
-        // Login button
-        JButton loginButton = new JButton("Login");
-        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        loginButton.setBackground(new Color(100, 149, 237)); // Blue button
-        loginButton.setForeground(Color.WHITE);
-        loginButton.addActionListener(e -> login(windowManager));
-        centerBox.add(Box.createVerticalStrut(20)); // Space before button
-        centerBox.add(loginButton);
-
-        // Create GridBagConstraints to center the panel in the window
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
-        add(centerBox, gbc);
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if ("lookAndFeel".equals(evt.getPropertyName())
+                    || evt.getPropertyName().startsWith("laf.styleChanged")) {
+                SwingUtilities.invokeLater(() -> {
+                    updateContainerColor();
+                });
+            }
+        }
+    }
+    
+    /**
+     * Called when this component is removed from its parent.
+     * Used to clean up property change listeners to avoid memory leaks.
+     */
+    @Override
+    public void removeNotify() {
+        super.removeNotify();
+        // Remove all property change listeners of our type
+        PropertyChangeListener[] listeners = UIManager.getPropertyChangeListeners();
+        for (PropertyChangeListener listener : listeners) {
+            if (listener instanceof ThemeChangeListener) {
+                UIManager.removePropertyChangeListener(listener);
+            }
+        }
     }
 
     // Toggle password visibility (show/hide)
@@ -102,8 +93,10 @@ public class LoginPage extends JPanel {
         }
     }
 
-    // Login action handler
-    private void login(WindowManager windowManager) {
+    /**
+     * Authenticates the user credentials and navigates to Home page if successful.
+     */
+    private void login() {
         String email = emailField.getText();
         String password = new String(passwordField.getPassword());
 
@@ -117,6 +110,267 @@ public class LoginPage extends JPanel {
         } else {
             JOptionPane.showMessageDialog(this, "Invalid email or password.");
         }
+        
+        emailField.setText(null);
+        passwordField.setText(null);
     }
-}
 
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        container = new javax.swing.JPanel();
+        top = new javax.swing.JPanel();
+        titlePanel = new javax.swing.JPanel();
+        loginLabel = new javax.swing.JLabel();
+        imagePanel = new ResizableImage("logo.png");
+        mid = new javax.swing.JPanel();
+        clickablePanel = new javax.swing.JPanel();
+        showPasswordCheckBox = new javax.swing.JCheckBox();
+        loginButton = new javax.swing.JButton();
+        writablePanel = new javax.swing.JPanel();
+        labelPanel = new javax.swing.JPanel();
+        emailLabel = new javax.swing.JLabel();
+        passwordLabel = new javax.swing.JLabel();
+        inputPanel = new javax.swing.JPanel();
+        emailField = new javax.swing.JTextField();
+        passwordField = new javax.swing.JPasswordField();
+        bot = new javax.swing.JPanel();
+        controlPanel = new javax.swing.JPanel();
+        backButton = new javax.swing.JButton();
+
+        setLayout(new java.awt.GridBagLayout());
+
+        container.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(92, 158, 173)));
+        container.setPreferredSize(new java.awt.Dimension(800, 300));
+        container.setLayout(new java.awt.GridBagLayout());
+
+        top.setOpaque(false);
+        top.setLayout(new java.awt.GridBagLayout());
+
+        titlePanel.setOpaque(false);
+        titlePanel.setLayout(new java.awt.BorderLayout());
+
+        loginLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 48)); // NOI18N
+        loginLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        loginLabel.setText("Log In");
+        titlePanel.add(loginLabel, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        top.add(titlePanel, gridBagConstraints);
+
+        imagePanel.setOpaque(false);
+        imagePanel.setPreferredSize(new java.awt.Dimension(200, 200));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        top.add(imagePanel, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.weighty = 1.0;
+        container.add(top, gridBagConstraints);
+
+        mid.setOpaque(false);
+        mid.setLayout(new java.awt.GridBagLayout());
+
+        clickablePanel.setOpaque(false);
+        clickablePanel.setLayout(new java.awt.GridBagLayout());
+
+        showPasswordCheckBox.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
+        showPasswordCheckBox.setText("Show Password");
+        showPasswordCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showPasswordCheckBoxActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 10);
+        clickablePanel.add(showPasswordCheckBox, gridBagConstraints);
+
+        loginButton.setFont(new java.awt.Font("Helvetica Neue", 0, 20)); // NOI18N
+        loginButton.setText("Enter");
+        loginButton.setPreferredSize(new java.awt.Dimension(110, 35));
+        loginButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+        clickablePanel.add(loginButton, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.insets = new java.awt.Insets(21, 0, 0, 0);
+        mid.add(clickablePanel, gridBagConstraints);
+
+        writablePanel.setOpaque(false);
+        writablePanel.setLayout(new java.awt.GridBagLayout());
+
+        labelPanel.setOpaque(false);
+        labelPanel.setLayout(new java.awt.GridBagLayout());
+
+        emailLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        emailLabel.setText("Email:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 10);
+        labelPanel.add(emailLabel, gridBagConstraints);
+
+        passwordLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        passwordLabel.setText("Password:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 10);
+        labelPanel.add(passwordLabel, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        writablePanel.add(labelPanel, gridBagConstraints);
+
+        inputPanel.setOpaque(false);
+        inputPanel.setLayout(new java.awt.GridBagLayout());
+
+        emailField.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
+        emailField.setPreferredSize(new java.awt.Dimension(250, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
+        inputPanel.add(emailField, gridBagConstraints);
+
+        passwordField.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
+        passwordField.setPreferredSize(new java.awt.Dimension(250, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
+        inputPanel.add(passwordField, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        writablePanel.add(inputPanel, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 34, 0, 0);
+        mid.add(writablePanel, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.weighty = 1.0;
+        container.add(mid, gridBagConstraints);
+
+        bot.setOpaque(false);
+        bot.setLayout(new java.awt.BorderLayout());
+
+        controlPanel.setOpaque(false);
+
+        backButton.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        backButton.setText("Back");
+
+        javax.swing.GroupLayout controlPanelLayout = new javax.swing.GroupLayout(controlPanel);
+        controlPanel.setLayout(controlPanelLayout);
+        controlPanelLayout.setHorizontalGroup(
+            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(backButton)
+                .addContainerGap())
+        );
+        controlPanelLayout.setVerticalGroup(
+            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(backButton)
+                .addGap(27, 27, 27))
+        );
+
+        bot.add(controlPanel, java.awt.BorderLayout.SOUTH);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        gridBagConstraints.weighty = 1.0;
+        container.add(bot, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.weighty = 1.0;
+        add(container, gridBagConstraints);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+        login();
+    }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void showPasswordCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPasswordCheckBoxActionPerformed
+        togglePasswordVisibility();
+    }//GEN-LAST:event_showPasswordCheckBoxActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backButton;
+    private javax.swing.JPanel bot;
+    private javax.swing.JPanel clickablePanel;
+    private javax.swing.JPanel container;
+    private javax.swing.JPanel controlPanel;
+    private javax.swing.JTextField emailField;
+    private javax.swing.JLabel emailLabel;
+    private javax.swing.JPanel imagePanel;
+    private javax.swing.JPanel inputPanel;
+    private javax.swing.JPanel labelPanel;
+    private javax.swing.JButton loginButton;
+    private javax.swing.JLabel loginLabel;
+    private javax.swing.JPanel mid;
+    private javax.swing.JPasswordField passwordField;
+    private javax.swing.JLabel passwordLabel;
+    private javax.swing.JCheckBox showPasswordCheckBox;
+    private javax.swing.JPanel titlePanel;
+    private javax.swing.JPanel top;
+    private javax.swing.JPanel writablePanel;
+    // End of variables declaration//GEN-END:variables
+}

@@ -1,102 +1,165 @@
-/*
- * Represents a homework assignment, including its details, deadline, 
- * and student submissions.
- */
-
 package com.vaszilvalentin.educore.homeworks;
-
-/**
- * @author vaszilvalentin
- */
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents a homework assignment, including its details, deadline,
+ * subject, class, and student submissions.
+ */
 public class Homework {
     private String id; // Unique identifier for the homework
     private String description; // Description of the assignment
     private LocalDateTime deadline; // Submission deadline
-    private String grade; // Grade assigned to the homework
-    private Map<String, String> submissions; // Stores student submissions (Student ID -> File Path)
+    private String subject; // Subject of the homework (e.g., Math, History)
+    private String classId; // The class to which the homework is assigned (e.g., 11.B)
+
+    // Stores student submissions (Student ID -> Submission)
+    private Map<String, Submission> submissions;
 
     /**
-     * Constructor to initialize a Homework object.
-     * 
-     * @param id          Unique identifier for the homework
-     * @param description Description of the homework assignment
-     * @param deadline    Submission deadline
-     * @param grade       Assigned grade (can be updated later)
+     * Represents an individual student submission,
+     * including file path and grade.
      */
-    public Homework(String id, String description, LocalDateTime deadline, String grade) {
+    public static class Submission {
+        private String filePath;
+        private String grade;
+
+        public Submission() {
+            this.filePath = "";
+            this.grade = "-";
+        }
+
+        public Submission(String filePath, String grade) {
+            this.filePath = filePath;
+            this.grade = grade;
+        }
+
+        public String getFilePath() {
+            return filePath;
+        }
+
+        public void setFilePath(String filePath) {
+            this.filePath = filePath;
+        }
+
+        public String getGrade() {
+            return grade;
+        }
+
+        public void setGrade(String grade) {
+            this.grade = grade;
+        }
+
+        @Override
+        public String toString() {
+            return "Submission{" +
+                    "filePath='" + filePath + '\'' +
+                    ", grade='" + grade + '\'' +
+                    '}';
+        }
+    }
+
+    // Constructor
+    public Homework(String id, String description, LocalDateTime deadline, String subject, String classId) {
         this.id = id;
         this.description = description;
         this.deadline = deadline;
-        this.grade = grade;
+        this.subject = subject;
+        this.classId = classId;
         this.submissions = new HashMap<>();
     }
 
     // Getters and setters
 
-    /** @return The unique identifier of the homework */
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    /** Sets the unique identifier of the homework */
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    /** @return The description of the homework assignment */
-    public String getDescription() { return description; }
+    public String getDescription() {
+        return description;
+    }
 
-    /** Sets the description of the homework assignment */
-    public void setDescription(String description) { this.description = description; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    /** @return The submission deadline */
-    public LocalDateTime getDeadline() { return deadline; }
+    public LocalDateTime getDeadline() {
+        return deadline;
+    }
 
-    /** Sets the submission deadline */
-    public void setDeadline(LocalDateTime deadline) { this.deadline = deadline; }
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
+    }
 
-    /** @return The assigned grade */
-    public String getGrade() { return grade; }
+    public String getSubject() {
+        return subject;
+    }
 
-    /** Sets the assigned grade */
-    public void setGrade(String grade) { this.grade = grade; }
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
 
-    /** @return A map of student submissions (Student ID -> File Path) */
-    public Map<String, String> getSubmissions() { return submissions; }
+    public String getClassId() {
+        return classId;
+    }
 
-    /** Sets the student submissions */
-    public void setSubmissions(Map<String, String> submissions) { this.submissions = submissions; }
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
+
+    public Map<String, Submission> getSubmissions() {
+        return submissions;
+    }
+
+    public void setSubmissions(Map<String, Submission> submissions) {
+        this.submissions = submissions;
+    }
+
+    // Submission-related methods
 
     /**
-     * Adds a submission for a student.
-     * 
-     * @param studentId The ID of the student submitting the homework
-     * @param filePath  The file path of the submission
+     * Adds or replaces a submission for a student.
+     *
+     * @param studentId The ID of the student
+     * @param submission The submission object containing file and grade
      */
-    public void addSubmission(String studentId, String filePath) {
-        submissions.put(studentId, filePath);
+    public void addSubmission(String studentId, Submission submission) {
+        submissions.put(studentId, submission);
     }
 
     /**
-     * Removes a submission for a student.
-     * 
-     * @param studentId The ID of the student whose submission should be removed
+     * Removes a student's submission.
+     *
+     * @param studentId The ID of the student to remove
      */
     public void removeSubmission(String studentId) {
         submissions.remove(studentId);
     }
 
     /**
-     * Returns a string representation of the Homework object.
+     * Gets a student's submission object.
+     *
+     * @param studentId The student ID
+     * @return Submission object or null if not found
      */
+    public Submission getSubmission(String studentId) {
+        return submissions.get(studentId);
+    }
+
     @Override
     public String toString() {
         return "Homework{" +
                 "id='" + id + '\'' +
                 ", description='" + description + '\'' +
                 ", deadline=" + deadline +
-                ", grade='" + grade + '\'' +
+                ", subject='" + subject + '\'' +
+                ", classId='" + classId + '\'' +
                 ", submissions=" + submissions +
                 '}';
     }

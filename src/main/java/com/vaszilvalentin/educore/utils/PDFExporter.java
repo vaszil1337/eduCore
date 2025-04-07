@@ -58,29 +58,29 @@ public class PDFExporter {
      * Exports students of a specific grade to a PDF file.
      *
      * @param students The list of students
-     * @param grade    The grade to filter by
+     * @param classId   The classId to filter by
      * @param filePath The file path for the exported PDF
      */
-    public static void exportStudentsByGradeToPDF(List<User> students, String grade, String filePath) {
+    public static void exportStudentsByGradeToPDF(List<User> students, String classId, String filePath) {
         Document document = new Document();
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
-            document.add(new Paragraph("Students in Grade " + grade));
+            document.add(new Paragraph("Students in Grade " + classId));
             document.add(new Paragraph("\n"));
 
-            // Create a table with three columns (Name, Email, Grade)
+            // Create a table with three columns (Name, Email, Class)
             PdfPTable table = new PdfPTable(3);
             table.setWidthPercentage(100);
             table.addCell("Name");
             table.addCell("Email");
-            table.addCell("Grade");
+            table.addCell("Class");
 
             for (User user : students) {
-                if (grade.equals(user.getGrade())) {
+                if (classId.equals(user.getClassId())) {
                     table.addCell(user.getName());
                     table.addCell(user.getEmail());
-                    table.addCell(user.getGrade());
+                    table.addCell(user.getClassId());
                 }
             }
 

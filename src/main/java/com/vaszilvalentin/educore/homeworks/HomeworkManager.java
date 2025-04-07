@@ -1,124 +1,187 @@
-/*
- * Manages homework assignments, including adding, updating, deleting, and handling submissions.
- */
-
 package com.vaszilvalentin.educore.homeworks;
 
 import com.vaszilvalentin.educore.data.HomeworkDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages homework assignments: creation, retrieval, updating, deletion,
+ * class/subject filtering, and handling student submissions and grades.
+ */
 public class HomeworkManager {
 
     /**
      * Adds a new homework assignment to the database.
-     * 
-     * @param homework The homework object to be added
+     * Automatically assigns a unique ID.
+     *
+     * @param homework Homework object to add
      */
     public static void addHomework(Homework homework) {
-        List<Homework> homeworkList = HomeworkDatabase.loadHomework(); // Load existing homework
-        homework.setId(HomeworkDatabase.generateHomeworkId()); // Generate a unique ID for the new homework
-        homeworkList.add(homework); // Add the new homework to the list
-        HomeworkDatabase.saveHomework(homeworkList); // Save the updated list to the database
+        List<Homework> homeworkList = HomeworkDatabase.loadHomework();
+        homework.setId(HomeworkDatabase.generateHomeworkId());
+        homeworkList.add(homework);
+        HomeworkDatabase.saveHomework(homeworkList);
     }
 
     /**
-     * Retrieves all homework assignments from the database.
-     * 
-     * @return A list of all homework assignments
+     * Returns all homework assignments from the database.
+     *
+     * @return List of all homework
      */
     public static List<Homework> getAllHomework() {
-        return HomeworkDatabase.loadHomework(); // Load and return all homework from the database
+        return HomeworkDatabase.loadHomework();
     }
 
     /**
-     * Retrieves all homework assignments for a specific grade.
-     * 
-     * @param grade The grade filter for the homework assignments
-     * @return A list of homework assignments for the specified grade
+     * Retrieves all homework for a specific class.
+     *
+     * @param classId The class ID (e.g., "10B")
+     * @return Filtered list of homework
      */
-    public static List<Homework> getHomeworkByGrade(String grade) {
-        List<Homework> homeworkList = HomeworkDatabase.loadHomework(); // Load all homework assignments
-        List<Homework> filteredHomework = new ArrayList<>(); // List to store filtered homework assignments
+    public static List<Homework> getHomeworkByClass(String classId) {
+        List<Homework> filteredHomework = new ArrayList<>();
 
-        // Filter homework by grade
-        for (Homework homework : homeworkList) {
-            if (homework.getGrade().equalsIgnoreCase(grade)) {
+        for (Homework homework : HomeworkDatabase.loadHomework()) {
+            if (homework.getClassId().equalsIgnoreCase(classId)) {
                 filteredHomework.add(homework);
             }
         }
-        return filteredHomework; // Return filtered homework assignments
+
+        return filteredHomework;
     }
 
     /**
-     * Updates an existing homework assignment with new details.
-     * 
-     * @param id The ID of the homework to be updated
-     * @param updatedHomework The new homework object containing updated details
+     * Retrieves all homework for a specific subject.
+     *
+     * @param subject The subject name (e.g., "Math")
+     * @return Filtered list of homework
+     */
+    public static List<Homework> getHomeworkBySubject(String subject) {
+        List<Homework> filteredHomework = new ArrayList<>();
+
+        for (Homework homework : HomeworkDatabase.loadHomework()) {
+            if (homework.getSubject().equalsIgnoreCase(subject)) {
+                filteredHomework.add(homework);
+            }
+        }
+
+        return filteredHomework;
+    }
+
+    /**
+     * Updates a specific homework assignment by ID.
+     *
+     * @param id              The homework ID to update
+     * @param updatedHomework The updated homework object
      */
     public static void updateHomework(String id, Homework updatedHomework) {
-        List<Homework> homeworkList = HomeworkDatabase.loadHomework(); // Load existing homework assignments
+        List<Homework> homeworkList = HomeworkDatabase.loadHomework();
 
-        // Find and update the homework with the matching ID
         for (int i = 0; i < homeworkList.size(); i++) {
             if (homeworkList.get(i).getId().equals(id)) {
-                homeworkList.set(i, updatedHomework); // Replace the old homework with the updated one
+                homeworkList.set(i, updatedHomework);
                 break;
             }
         }
-        HomeworkDatabase.saveHomework(homeworkList); // Save the updated homework list to the database
+
+        HomeworkDatabase.saveHomework(homeworkList);
     }
 
     /**
      * Deletes a homework assignment by its ID.
-     * 
-     * @param id The ID of the homework to be deleted
+     *
+     * @param id The homework ID to delete
      */
     public static void deleteHomework(String id) {
-        List<Homework> homeworkList = HomeworkDatabase.loadHomework(); // Load existing homework assignments
-
-        // Remove the homework with the matching ID
+        List<Homework> homeworkList = HomeworkDatabase.loadHomework();
         homeworkList.removeIf(homework -> homework.getId().equals(id));
-
-        HomeworkDatabase.saveHomework(homeworkList); // Save the updated homework list after deletion
+        HomeworkDatabase.saveHomework(homeworkList);
     }
 
     /**
-     * Adds a submission for a specific student to a homework assignment.
-     * 
-     * @param homeworkId The ID of the homework
-     * @param studentId The ID of the student submitting the homework
-     * @param filePath The file path where the submission is stored
+     * Adds or replaces a submission for a student.
+     * Grade is initially set to "-" (ungraded).
+     *
+     * @param homeworkId Homework ID
+     * @param studentId  Student ID
+     * @param filePath   Submitted file path
      */
     public static void addSubmission(String homeworkId, String studentId, String filePath) {
-        List<Homework> homeworkList = HomeworkDatabase.loadHomework(); // Load existing homework assignments
+        List<Homework> homeworkList = HomeworkDatabase.loadHomework();
 
-        // Find the homework by its ID and add the student's submission
         for (Homework homework : homeworkList) {
             if (homework.getId().equals(homeworkId)) {
-                homework.addSubmission(studentId, filePath);
+                Homework.Submission submission = new Homework.Submission(filePath, "-");
+                homework.addSubmission(studentId, submission);
                 break;
             }
         }
-        HomeworkDatabase.saveHomework(homeworkList); // Save the updated homework list
+
+        HomeworkDatabase.saveHomework(homeworkList);
     }
 
     /**
-     * Removes a student's submission from a specific homework assignment.
-     * 
-     * @param homeworkId The ID of the homework
-     * @param studentId The ID of the student whose submission is to be removed
+     * Removes a student's submission from a homework.
+     *
+     * @param homeworkId Homework ID
+     * @param studentId  Student ID
      */
     public static void removeSubmission(String homeworkId, String studentId) {
-        List<Homework> homeworkList = HomeworkDatabase.loadHomework(); // Load existing homework assignments
+        List<Homework> homeworkList = HomeworkDatabase.loadHomework();
 
-        // Find the homework by its ID and remove the student's submission
         for (Homework homework : homeworkList) {
             if (homework.getId().equals(homeworkId)) {
                 homework.removeSubmission(studentId);
                 break;
             }
         }
-        HomeworkDatabase.saveHomework(homeworkList); // Save the updated homework list after removal
+
+        HomeworkDatabase.saveHomework(homeworkList);
+    }
+
+    /**
+     * Sets a grade for a student's submission.
+     *
+     * @param homeworkId Homework ID
+     * @param studentId  Student ID
+     * @param grade      Grade to assign (e.g., "5")
+     */
+    public static void setSubmissionGrade(String homeworkId, String studentId, String grade) {
+        List<Homework> homeworkList = HomeworkDatabase.loadHomework();
+
+        for (Homework homework : homeworkList) {
+            if (homework.getId().equals(homeworkId)) {
+                Homework.Submission submission = homework.getSubmission(studentId);
+                if (submission != null) {
+                    submission.setGrade(grade);
+                }
+                break;
+            }
+        }
+
+        HomeworkDatabase.saveHomework(homeworkList);
+    }
+
+    /**
+     * Retrieves the grade for a student's submission.
+     *
+     * @param homeworkId Homework ID
+     * @param studentId  Student ID
+     * @return Grade as string, or "-" if ungraded
+     */
+    public static String getSubmissionGrade(String homeworkId, String studentId) {
+        List<Homework> homeworkList = HomeworkDatabase.loadHomework();
+
+        for (Homework homework : homeworkList) {
+            if (homework.getId().equals(homeworkId)) {
+                Homework.Submission submission = homework.getSubmission(studentId);
+                if (submission != null) {
+                    return submission.getGrade();
+                }
+            }
+        }
+
+        return "-";
     }
 }
