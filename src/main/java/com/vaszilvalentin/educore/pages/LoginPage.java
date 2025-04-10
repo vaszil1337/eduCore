@@ -5,7 +5,7 @@
 package com.vaszilvalentin.educore.pages;
 
 import com.vaszilvalentin.educore.auth.AuthManager;
-import com.vaszilvalentin.educore.utils.ResizableImage;
+import com.vaszilvalentin.educore.components.ResizableImage;
 import com.vaszilvalentin.educore.window.WindowManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

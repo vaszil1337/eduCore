@@ -5,17 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8a25cdd8-7a28-49d5-b80d-30f2a6119fbb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/auth/AuthManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/auth/AuthManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/certificates/AbsenceCertificate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/absence/AbsenceCertificate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/certificates/AbsenceCertificateManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/absence/AbsenceCertificateManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/data/AbsenceCertificateDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/data/AbsenceCertificateDatabase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/data/HomeworkDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/data/HomeworkDatabase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/homeworks/Homework.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/homework/Homework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/homeworks/HomeworkManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/homework/HomeworkManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/pages/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/pages/HomePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/pages/SettingsPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/pages/SettingsPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/pages/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/pages/LoginPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/pages/subpages/HomeworkPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/pages/subpages/HomeworkPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/preference/PreferenceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/preference/PreferenceManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/users/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/users/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/users/UserManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/users/UserManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/utils/PDFExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/utils/PDFExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/utils/ResizableImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/components/ResizableImage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/window/WindowManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vaszilvalentin/educore/window/WindowManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
@@ -44,10 +50,25 @@
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "User",
+    "git-widget-placeholder": "UI",
     "last_opened_file_path": "/Users/vaszilvalentin/Documents/GitHub/eduCore"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="eduCore" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="eduCore" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

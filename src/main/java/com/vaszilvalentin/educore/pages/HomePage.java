@@ -17,6 +17,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -99,8 +100,7 @@ public class HomePage extends javax.swing.JPanel {
             addNavButton("My Profile", "Profile", row++);
 
         } else if (role.equals("teacher")) {
-            addNavButton("Create Assignment", "CreateAssignment", row++);
-            addNavButton("Assigned Tasks", "AssignmentsList", row++);
+            addNavButton("Assignments", "TeacherHomework", row++);
             addNavButton("Enter Absences", "AbsenceEntry", row++);
             addNavButton("Student List", "StudentList", row++);
             addNavButton("My Profile", "Profile", row++);
@@ -275,8 +275,8 @@ public class HomePage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
+        JOptionPane.showMessageDialog(this, "Logout successful!");
         AuthManager.logout();
-        windowManager.switchToPage("Landing");
     }//GEN-LAST:event_logoutButtonActionPerformed
 
 

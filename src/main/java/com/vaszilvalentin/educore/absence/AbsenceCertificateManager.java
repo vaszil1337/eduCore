@@ -3,7 +3,7 @@
  * This class interacts with the AbsenceCertificateDatabase for data persistence.
  */
 
-package com.vaszilvalentin.educore.certificates;
+package com.vaszilvalentin.educore.absence;
 
 /**
  * @author vaszilvalentin

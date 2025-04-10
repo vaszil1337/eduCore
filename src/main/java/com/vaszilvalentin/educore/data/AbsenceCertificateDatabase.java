@@ -13,7 +13,7 @@ import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.vaszilvalentin.educore.certificates.AbsenceCertificate;
+import com.vaszilvalentin.educore.absence.AbsenceCertificate;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;

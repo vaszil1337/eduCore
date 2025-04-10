@@ -11,6 +11,7 @@ import com.vaszilvalentin.educore.utils.PasswordUtils;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserManager {
 
@@ -37,11 +38,7 @@ public class UserManager {
 
     // Generates a random password and encrypts it
     private static String generatePassword() {
-        String plainPassword = PasswordUtils.generatePassword(12); // 12-character password
-        System.out.println("Generated password: " + plainPassword);
-
-        // Encrypt the password
-        return EncryptionUtils.encrypt(plainPassword);
+        return EncryptionUtils.encrypt(PasswordUtils.generatePassword(12));
     }
 
     // Verifies if the provided password matches the stored password for a user
@@ -110,6 +107,12 @@ public class UserManager {
             }
         }
         return filteredUsers;
+    }
+
+    public static List<User> getStudentsByClass(String classId) {
+        return getUsersByRole("student").stream()
+                .filter(student -> student.getClassId().equals(classId))
+                .collect(Collectors.toList());
     }
 
     // Updates a user based on their ID with new user information

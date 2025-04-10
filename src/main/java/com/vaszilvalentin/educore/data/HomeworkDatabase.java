@@ -13,7 +13,7 @@ import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.vaszilvalentin.educore.homeworks.Homework;
+import com.vaszilvalentin.educore.homework.Homework;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;

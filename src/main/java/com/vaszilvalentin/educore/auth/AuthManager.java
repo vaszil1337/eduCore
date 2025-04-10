@@ -6,7 +6,7 @@ package com.vaszilvalentin.educore.auth;
 /**
  * @author vaszilvalentin
  */
-
+import com.vaszilvalentin.educore.Main;
 import com.vaszilvalentin.educore.users.User;
 import com.vaszilvalentin.educore.users.UserManager;
 
@@ -35,7 +35,7 @@ public class AuthManager {
     /**
      * Authenticates a user by checking if their email and password are valid.
      *
-     * @param email         The user's email address
+     * @param email The user's email address
      * @param inputPassword The password entered by the user
      * @return true if authentication is successful, false otherwise
      */
@@ -49,7 +49,7 @@ public class AuthManager {
             CurrentUser.setCurrentUser(user);
             return true;
         }
-        
+
         return false; // Return false if authentication fails
     }
 
@@ -57,6 +57,7 @@ public class AuthManager {
      * Logs out the currently authenticated user.
      */
     public static void logout() {
-        CurrentUser.setCurrentUser(null); // Clear the current user session
+        CurrentUser.setCurrentUser(null);
+        Main.restartApplication();
     }
 }

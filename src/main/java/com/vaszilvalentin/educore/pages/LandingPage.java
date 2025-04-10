@@ -4,6 +4,7 @@
  */
 package com.vaszilvalentin.educore.pages;
 
+import com.vaszilvalentin.educore.utils.HomeworkAutoGrader;
 import com.vaszilvalentin.educore.window.WindowManager;
 
 /**
@@ -16,6 +17,7 @@ public class LandingPage extends javax.swing.JPanel {
      * Creates new form LandingPage
      */
     WindowManager windowManager;
+
     public LandingPage(WindowManager windowManager) {
         this.windowManager = windowManager;
         initComponents();

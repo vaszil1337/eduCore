@@ -1,14 +1,14 @@
 /*
  * Represents an absence certificate for a user.
- * Stores details such as the user ID, file location, date, name, and type of certificate.
+ * Stores details such as the user ID, file location, date range, name, and type of certificate.
  */
-package com.vaszilvalentin.educore.certificates;
+package com.vaszilvalentin.educore.absence;
+
+import java.time.LocalDate;
 
 /**
  * @author vaszilvalentin
  */
-
-import java.util.Date;
 
 public class AbsenceCertificate {
 
@@ -21,11 +21,11 @@ public class AbsenceCertificate {
     // File path where the certificate document is stored
     private String filePath;
 
-    // Date when the absence was recorded
-    private Date date;
+    // Start date of the absence period
+    private LocalDate startDate;
 
-    // Name of the certificate (e.g., "Medical Certificate")
-    private String name;
+    // End date of the absence period
+    private LocalDate endDate;
 
     // Type of certificate (e.g., "Medical", "Parental Justification")
     private String certificateType;
@@ -35,15 +35,16 @@ public class AbsenceCertificate {
      *
      * @param userId          ID of the user who owns this certificate
      * @param filePath        Path to the stored certificate file
-     * @param date            Date of the absence
-     * @param name            Name of the certificate
+     * @param startDate       Start date of the absence period
+     * @param endDate         End date of the absence period
      * @param certificateType Type of the certificate
      */
-    public AbsenceCertificate(String userId, String filePath, Date date, String name, String certificateType) {
+    public AbsenceCertificate(String userId, String filePath, LocalDate startDate, LocalDate endDate, 
+                             String certificateType) {
         this.userId = userId;
         this.filePath = filePath;
-        this.date = date;
-        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.certificateType = certificateType;
     }
 
@@ -102,39 +103,39 @@ public class AbsenceCertificate {
     }
 
     /**
-     * Retrieves the date of the absence.
+     * Retrieves the start date of the absence period.
      *
-     * @return Absence date
+     * @return Start date of absence
      */
-    public Date getDate() {
-        return date;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
     /**
-     * Sets the date for this certificate.
+     * Sets the start date for this certificate.
      *
-     * @param date The date when the absence was recorded
+     * @param startDate The start date of the absence period
      */
-    public void setDate(Date date) {
-        this.date = date;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     /**
-     * Retrieves the name of the certificate.
+     * Retrieves the end date of the absence period.
      *
-     * @return Certificate name
+     * @return End date of absence
      */
-    public String getName() {
-        return name;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
     /**
-     * Sets the name of the certificate.
+     * Sets the end date for this certificate.
      *
-     * @param name The name of the certificate (e.g., "Medical Certificate")
+     * @param endDate The end date of the absence period
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     /**

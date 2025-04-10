@@ -1,14 +1,9 @@
-/*
- * Utility class for exporting user data to PDF.
- */
 package com.vaszilvalentin.educore.utils;
 
-/**
- * @author vaszilvalentin
- */
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.vaszilvalentin.educore.users.User;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -30,7 +25,6 @@ public class PDFExporter {
             document.add(new Paragraph("Student Login Credentials"));
             document.add(new Paragraph("\n"));
 
-            // Create a table with two columns (Email and Password)
             PdfPTable table = new PdfPTable(2);
             table.setWidthPercentage(100);
             table.addCell("Email");
@@ -38,7 +32,7 @@ public class PDFExporter {
 
             for (User student : students) {
                 String email = student.getEmail();
-                String plainPassword = EncryptionUtils.decrypt(student.getPassword()); // Decrypt stored password
+                String plainPassword = EncryptionUtils.decrypt(student.getPassword());
                 table.addCell(email);
                 table.addCell(plainPassword);
             }
@@ -58,7 +52,7 @@ public class PDFExporter {
      * Exports students of a specific grade to a PDF file.
      *
      * @param students The list of students
-     * @param classId   The classId to filter by
+     * @param classId  The classId to filter by
      * @param filePath The file path for the exported PDF
      */
     public static void exportStudentsByGradeToPDF(List<User> students, String classId, String filePath) {
@@ -69,7 +63,6 @@ public class PDFExporter {
             document.add(new Paragraph("Students in Grade " + classId));
             document.add(new Paragraph("\n"));
 
-            // Create a table with three columns (Name, Email, Class)
             PdfPTable table = new PdfPTable(3);
             table.setWidthPercentage(100);
             table.addCell("Name");
@@ -97,14 +90,13 @@ public class PDFExporter {
 
     /**
      * Exports users of a specific role (Student, Teacher, Admin) to a PDF file.
-     * Teachers have additional columns for subject and taught classes.
+     * Teachers have additional columns for subjects and taught classes.
      *
      * @param users    The list of users
      * @param role     The role to filter by (student, teacher, or admin)
      * @param filePath The file path for the exported PDF
      */
     public static void exportUsersByRoleToPDF(List<User> users, String role, String filePath) {
-        // Define table column count based on role and map role names to readable format
         Map<String, String> roleMap = Map.of(
                 "student", "Student",
                 "teacher", "Teacher",
@@ -112,7 +104,7 @@ public class PDFExporter {
         );
         String translatedRole = roleMap.getOrDefault(role, "Unknown Role");
         boolean isTeacher = "teacher".equals(role);
-        int tableSize = isTeacher ? 4 : 2; // Teachers have extra columns
+        int tableSize = isTeacher ? 4 : 2;
 
         Document document = new Document();
         try {
@@ -121,35 +113,27 @@ public class PDFExporter {
             document.add(new Paragraph(translatedRole + " Users"));
             document.add(new Paragraph("\n"));
 
-            // Create table headers with bold font
             Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
             PdfPTable table = new PdfPTable(tableSize);
             table.setWidthPercentage(100);
 
-            // Add common columns (Name, Email)
-            PdfPCell nameHeader = new PdfPCell(new Phrase("Name", headerFont));
-            PdfPCell emailHeader = new PdfPCell(new Phrase("Email", headerFont));
-            table.addCell(nameHeader);
-            table.addCell(emailHeader);
+            table.addCell(new PdfPCell(new Phrase("Name", headerFont)));
+            table.addCell(new PdfPCell(new Phrase("Email", headerFont)));
 
-            // Add teacher-specific columns (Subject, Taught Classes)
             if (isTeacher) {
-                PdfPCell subjectHeader = new PdfPCell(new Phrase("Subject", headerFont));
-                PdfPCell classesHeader = new PdfPCell(new Phrase("Taught Classes", headerFont));
-                table.addCell(subjectHeader);
-                table.addCell(classesHeader);
+                table.addCell(new PdfPCell(new Phrase("Subjects", headerFont)));
+                table.addCell(new PdfPCell(new Phrase("Taught Classes", headerFont)));
             }
 
-            // Populate the table with user data
             for (User user : users) {
                 if (role.equals(user.getRole())) {
                     table.addCell(user.getName());
                     table.addCell(user.getEmail());
 
                     if (isTeacher) {
-                        table.addCell(user.getSubject() != null ? user.getSubject() : "-");
+                        List<String> subjects = user.getSubjects() != null ? user.getSubjects() : List.of();
+                        table.addCell(subjects.isEmpty() ? "-" : String.join(", ", subjects));
 
-                        // Ensure that taughtClasses is not null
                         List<String> taughtClasses = user.getTaughtClasses() != null ? user.getTaughtClasses() : List.of();
                         table.addCell(taughtClasses.isEmpty() ? "-" : String.join(", ", taughtClasses));
                     }

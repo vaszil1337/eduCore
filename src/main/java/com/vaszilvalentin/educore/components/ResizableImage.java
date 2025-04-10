@@ -1,4 +1,4 @@
-package com.vaszilvalentin.educore.utils;
+package com.vaszilvalentin.educore.components;
 
 import java.awt.*;
 import java.awt.event.ComponentAdapter;

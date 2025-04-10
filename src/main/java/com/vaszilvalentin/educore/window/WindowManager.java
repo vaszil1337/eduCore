@@ -2,7 +2,7 @@
  * WindowManager class is responsible for managing the application's main window and pages.
  * It handles theme application, page transitions, resizing of components based on window size,
  * and macOS-specific UI configurations.
- * 
+ *
  * Pages are managed using a CardLayout, allowing for dynamic page switching (Landing, Login, Home, etc.).
  * It also ensures that the correct theme (Light/Dark) is applied at startup based on user preferences.
  */
@@ -15,8 +15,13 @@ import com.formdev.flatlaf.util.SystemInfo;
 import com.vaszilvalentin.educore.pages.HomePage;
 import com.vaszilvalentin.educore.pages.LandingPage;
 import com.vaszilvalentin.educore.pages.LoginPage;
+import com.vaszilvalentin.educore.pages.subpages.CreateHomeworkPanel;
+import com.vaszilvalentin.educore.pages.subpages.EditHomeworkPanel;
+import com.vaszilvalentin.educore.pages.subpages.HomeworkDetailsPanel;
 import com.vaszilvalentin.educore.pages.subpages.HomeworkPanel;
 import com.vaszilvalentin.educore.pages.subpages.PasswordUpdate;
+import com.vaszilvalentin.educore.pages.subpages.ProfilePanel;
+import com.vaszilvalentin.educore.pages.subpages.TeacherHomeworkPanel;
 import com.vaszilvalentin.educore.preference.PreferenceManager;
 import com.vaszilvalentin.educore.preference.Theme;
 
@@ -78,9 +83,18 @@ public class WindowManager {
         switchToPage("Landing");
     }
 
+    public void closeWindow() {
+        if (frame != null) {
+            pages.clear();
+            mainPanel.removeAll();
+            frame.dispose();
+            frame = null;
+        }
+    }
+
     /**
-     * Applies a custom theme with animation and macOS support.
-     * If an error occurs during theme loading, an error dialog is shown.
+     * Applies a custom theme with animation and macOS support. If an error
+     * occurs during theme loading, an error dialog is shown.
      */
     public static void applyTheme(Theme theme) {
         try {
@@ -91,8 +105,8 @@ public class WindowManager {
             // Determine theme properties
             String themeName = theme == Theme.DARK ? "Custom Dark" : "Custom Light";
             String themePath = theme == Theme.DARK
-                ? "/themes/flatlaf-custom-dark.properties"
-                : "/themes/flatlaf-custom.properties";
+                    ? "/themes/flatlaf-custom-dark.properties"
+                    : "/themes/flatlaf-custom.properties";
 
             // Load theme file from resources
             InputStream themeStream = WindowManager.class.getResourceAsStream(themePath);
@@ -125,10 +139,10 @@ public class WindowManager {
             // Show a dialog with the error message if theme switch fails
             SwingUtilities.invokeLater(() -> {
                 JOptionPane.showMessageDialog(
-                    null,
-                    "An error occurred while applying the theme:\n" + e.getMessage(),
-                    "Theme Error",
-                    JOptionPane.ERROR_MESSAGE
+                        null,
+                        "An error occurred while applying the theme:\n" + e.getMessage(),
+                        "Theme Error",
+                        JOptionPane.ERROR_MESSAGE
                 );
             });
         }
@@ -162,6 +176,16 @@ public class WindowManager {
                 return new PasswordUpdate(this);
             case "StudentHomework":
                 return new HomeworkPanel(this);
+            case "TeacherHomework":
+                return new TeacherHomeworkPanel(this);
+            case "EditHomework":
+                return new EditHomeworkPanel(this);
+            case "CreateHomework":
+                return new CreateHomeworkPanel(this);
+            case "HomeworkDetails":
+                return new HomeworkDetailsPanel(this);
+            case "Profile":
+                return new ProfilePanel(this);
             default:
                 throw new IllegalArgumentException("Unknown page: " + pageName);
         }
@@ -177,12 +201,17 @@ public class WindowManager {
         JMenuItem darkTheme = new JMenuItem("Dark Mode");
 
         lightTheme.addActionListener(e -> {
-            applyTheme(Theme.LIGHT);
-            PreferenceManager.saveTheme(Theme.LIGHT);
+            if (!PreferenceManager.getCurrentTheme().equals(Theme.LIGHT)) {
+                applyTheme(Theme.LIGHT);
+                PreferenceManager.saveTheme(Theme.LIGHT);
+            }
         });
+
         darkTheme.addActionListener(e -> {
-            applyTheme(Theme.DARK);
-            PreferenceManager.saveTheme(Theme.DARK);
+            if (!PreferenceManager.getCurrentTheme().equals(Theme.DARK)) {
+                applyTheme(Theme.DARK);
+                PreferenceManager.saveTheme(Theme.DARK);
+            }
         });
 
         themeMenu.add(lightTheme);
