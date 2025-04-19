@@ -27,14 +27,17 @@ public class PDFExporter {
 
             PdfPTable table = new PdfPTable(2);
             table.setWidthPercentage(100);
-            table.addCell("Email");
-            table.addCell("Password");
+
+            // Create header row
+            addHeaderCell(table, "Email");
+            addHeaderCell(table, "Password");
 
             for (User student : students) {
                 String email = student.getEmail();
                 String plainPassword = EncryptionUtils.decrypt(student.getPassword());
-                table.addCell(email);
-                table.addCell(plainPassword);
+
+                table.addCell(makeCenteredCell(email));
+                table.addCell(makeCenteredCell(plainPassword));
             }
 
             document.add(table);
@@ -49,13 +52,53 @@ public class PDFExporter {
     }
 
     /**
-     * Exports students of a specific grade to a PDF file.
+     * Exports a list of teachers' email addresses and decrypted passwords to a PDF file.
+     *
+     * @param teachers The list of teachers
+     * @param filePath The file path for the exported PDF
+     */
+    public static void exportTeacherLoginsToPDF(List<User> teachers, String filePath) {
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+            document.open();
+            document.add(new Paragraph("Teacher Login Credentials"));
+            document.add(new Paragraph("\n"));
+
+            PdfPTable table = new PdfPTable(2);
+            table.setWidthPercentage(100);
+
+            // Create header row
+            addHeaderCell(table, "Email");
+            addHeaderCell(table, "Password");
+
+            for (User teacher : teachers) {
+                String email = teacher.getEmail();
+                String plainPassword = EncryptionUtils.decrypt(teacher.getPassword());
+
+                table.addCell(makeCenteredCell(email));
+                table.addCell(makeCenteredCell(plainPassword));
+            }
+
+            document.add(table);
+            System.out.println("PDF exported successfully to: " + filePath);
+        } catch (DocumentException | IOException e) {
+            System.err.println("Error exporting PDF: " + e.getMessage());
+        } finally {
+            if (document.isOpen()) {
+                document.close();
+            }
+        }
+    }
+
+    /**
+     * Exports students of a specific class to a PDF file.
      *
      * @param students The list of students
      * @param classId  The classId to filter by
      * @param filePath The file path for the exported PDF
      */
-    public static void exportStudentsByGradeToPDF(List<User> students, String classId, String filePath) {
+    public static void exportStudentsByClassToPDF(List<User> students, String classId, String filePath) {
         Document document = new Document();
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -65,15 +108,18 @@ public class PDFExporter {
 
             PdfPTable table = new PdfPTable(3);
             table.setWidthPercentage(100);
-            table.addCell("Name");
-            table.addCell("Email");
-            table.addCell("Class");
 
-            for (User user : students) {
-                if (classId.equals(user.getClassId())) {
-                    table.addCell(user.getName());
-                    table.addCell(user.getEmail());
-                    table.addCell(user.getClassId());
+            // Create header row
+            addHeaderCell(table, "#");
+            addHeaderCell(table, "Name");
+            addHeaderCell(table, "Email");
+
+            // Loop through the students and add their data to the table
+            for (User student : students) {
+                if (classId.equals(student.getClassId())) {
+                    table.addCell(makeCenteredCell(String.valueOf(students.indexOf(student) + 1)));
+                    table.addCell(makeCenteredCell(student.getName()));
+                    table.addCell(makeCenteredCell(student.getEmail()));
                 }
             }
 
@@ -113,29 +159,30 @@ public class PDFExporter {
             document.add(new Paragraph(translatedRole + " Users"));
             document.add(new Paragraph("\n"));
 
-            Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+            Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
             PdfPTable table = new PdfPTable(tableSize);
             table.setWidthPercentage(100);
 
-            table.addCell(new PdfPCell(new Phrase("Name", headerFont)));
-            table.addCell(new PdfPCell(new Phrase("Email", headerFont)));
+            // Header
+            addHeaderCell(table, "Name", headerFont);
+            addHeaderCell(table, "Email", headerFont);
 
             if (isTeacher) {
-                table.addCell(new PdfPCell(new Phrase("Subjects", headerFont)));
-                table.addCell(new PdfPCell(new Phrase("Taught Classes", headerFont)));
+                addHeaderCell(table, "Subjects", headerFont);
+                addHeaderCell(table, "Taught Classes", headerFont);
             }
 
             for (User user : users) {
                 if (role.equals(user.getRole())) {
-                    table.addCell(user.getName());
-                    table.addCell(user.getEmail());
+                    table.addCell(makeCenteredCell(user.getName()));
+                    table.addCell(makeCenteredCell(user.getEmail()));
 
                     if (isTeacher) {
                         List<String> subjects = user.getSubjects() != null ? user.getSubjects() : List.of();
-                        table.addCell(subjects.isEmpty() ? "-" : String.join(", ", subjects));
+                        table.addCell(makeCenteredCell(subjects.isEmpty() ? "-" : String.join(", ", subjects)));
 
                         List<String> taughtClasses = user.getTaughtClasses() != null ? user.getTaughtClasses() : List.of();
-                        table.addCell(taughtClasses.isEmpty() ? "-" : String.join(", ", taughtClasses));
+                        table.addCell(makeCenteredCell(taughtClasses.isEmpty() ? "-" : String.join(", ", taughtClasses)));
                     }
                 }
             }
@@ -149,5 +196,31 @@ public class PDFExporter {
                 document.close();
             }
         }
+    }
+
+    /**
+     * Helper method to create a header cell with specific styling.
+     */
+    private static void addHeaderCell(PdfPTable table, String content) {
+        addHeaderCell(table, content, new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE));
+    }
+
+    /**
+     * Helper method to create a header cell with specific styling.
+     */
+    private static void addHeaderCell(PdfPTable table, String content, Font headerFont) {
+        PdfPCell cell = new PdfPCell(new Phrase(content, headerFont));
+        cell.setBackgroundColor(BaseColor.DARK_GRAY); // Set header background color
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER); // Center align the header text
+        table.addCell(cell);
+    }
+
+    /**
+     * Helper method to create a centered data cell.
+     */
+    private static PdfPCell makeCenteredCell(String content) {
+        PdfPCell cell = new PdfPCell(new Phrase(content));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER); // Center align the data text
+        return cell;
     }
 }

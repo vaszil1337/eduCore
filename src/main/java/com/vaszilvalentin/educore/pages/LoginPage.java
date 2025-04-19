@@ -190,6 +190,7 @@ public class LoginPage extends javax.swing.JPanel {
         clickablePanel.setLayout(new java.awt.GridBagLayout());
 
         showPasswordCheckBox.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
+        showPasswordCheckBox.setForeground(loginLabel.getForeground());
         showPasswordCheckBox.setText("Show Password");
         showPasswordCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

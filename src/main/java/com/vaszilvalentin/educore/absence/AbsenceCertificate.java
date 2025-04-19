@@ -9,7 +9,6 @@ import java.time.LocalDate;
 /**
  * @author vaszilvalentin
  */
-
 public class AbsenceCertificate {
 
     // Unique identifier for the certificate
@@ -19,7 +18,7 @@ public class AbsenceCertificate {
     private String userId;
 
     // File path where the certificate document is stored
-    private String filePath;
+    private String filePath = "-";
 
     // Start date of the absence period
     private LocalDate startDate;
@@ -28,24 +27,25 @@ public class AbsenceCertificate {
     private LocalDate endDate;
 
     // Type of certificate (e.g., "Medical", "Parental Justification")
-    private String certificateType;
+    private String certificateType = "-";
+    
+    private boolean approvedStatus = false;
 
     /**
      * Constructs an AbsenceCertificate instance.
      *
-     * @param userId          ID of the user who owns this certificate
-     * @param filePath        Path to the stored certificate file
-     * @param startDate       Start date of the absence period
-     * @param endDate         End date of the absence period
+     * @param userId ID of the user who owns this certificate
+     * @param filePath Path to the stored certificate file
+     * @param startDate Start date of the absence period
+     * @param endDate End date of the absence period
      * @param certificateType Type of the certificate
      */
-    public AbsenceCertificate(String userId, String filePath, LocalDate startDate, LocalDate endDate, 
-                             String certificateType) {
+    public AbsenceCertificate(String userId, String filePath, LocalDate startDate, LocalDate endDate, String certificateType) {
         this.userId = userId;
-        this.filePath = filePath;
+        this.filePath = (filePath != null && !filePath.isBlank()) ? filePath : "-";
         this.startDate = startDate;
         this.endDate = endDate;
-        this.certificateType = certificateType;
+        this.certificateType = (certificateType != null && !certificateType.isBlank()) ? certificateType : "-";
     }
 
     /**
@@ -155,4 +155,21 @@ public class AbsenceCertificate {
     public void setCertificateType(String certificateType) {
         this.certificateType = certificateType;
     }
+    
+    public boolean getApprovedStatus(){
+        return approvedStatus;
+    }
+    
+    public void setApprovedStatus(boolean approvedStatus){
+        this.approvedStatus = approvedStatus;
+    }
+
+    public boolean hasFile() {
+        return filePath != null && !filePath.equals("-") && !filePath.isBlank();
+    }
+
+    public boolean hasType() {
+        return certificateType != null && !certificateType.equals("-") && !certificateType.isBlank();
+    }
+
 }

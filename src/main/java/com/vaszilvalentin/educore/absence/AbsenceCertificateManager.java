@@ -2,13 +2,11 @@
  * Manages absence certificates, including adding, retrieving, and deleting certificates.
  * This class interacts with the AbsenceCertificateDatabase for data persistence.
  */
-
 package com.vaszilvalentin.educore.absence;
 
 /**
  * @author vaszilvalentin
  */
-
 import com.vaszilvalentin.educore.data.AbsenceCertificateDatabase;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,7 @@ public class AbsenceCertificateManager {
 
     /**
      * Adds a new absence certificate to the database.
-     * 
+     *
      * @param certificate The absence certificate to be added
      */
     public static void addCertificate(AbsenceCertificate certificate) {
@@ -36,7 +34,7 @@ public class AbsenceCertificateManager {
 
     /**
      * Retrieves all absence certificates from the database.
-     * 
+     *
      * @return List of all absence certificates
      */
     public static List<AbsenceCertificate> getAllCertificates() {
@@ -45,7 +43,7 @@ public class AbsenceCertificateManager {
 
     /**
      * Retrieves all absence certificates associated with a specific user.
-     * 
+     *
      * @param userId The ID of the user whose certificates are being retrieved
      * @return List of absence certificates belonging to the specified user
      */
@@ -65,7 +63,7 @@ public class AbsenceCertificateManager {
 
     /**
      * Deletes an absence certificate by its unique ID.
-     * 
+     *
      * @param certificateId The ID of the certificate to be deleted
      */
     public static void deleteCertificate(String certificateId) {
@@ -77,5 +75,26 @@ public class AbsenceCertificateManager {
 
         // Save the updated list back to the database
         AbsenceCertificateDatabase.saveCertificates(certificates);
+    }
+
+    public static AbsenceCertificate getCertificateById(String id) {
+        List<AbsenceCertificate> certs = AbsenceCertificateManager.getAllCertificates();
+        for (AbsenceCertificate cert : certs) {
+            if (cert.getId().equals(id)) {
+                return cert;
+            }
+        }
+        return null;
+    }
+
+    public static void updateCertificate(AbsenceCertificate cert) {
+        List<AbsenceCertificate> certs = AbsenceCertificateManager.getAllCertificates();
+        for (int i = 0; i < certs.size(); i++) {
+            if (certs.get(i).getId().equals(cert.getId())) {
+                certs.set(i, cert);
+                AbsenceCertificateDatabase.saveCertificates(certs);
+                return;
+            }
+        }
     }
 }

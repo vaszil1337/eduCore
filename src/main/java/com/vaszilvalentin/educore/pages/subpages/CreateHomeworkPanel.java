@@ -3,6 +3,8 @@ package com.vaszilvalentin.educore.pages.subpages;
 import com.vaszilvalentin.educore.homework.Homework;
 import com.vaszilvalentin.educore.homework.HomeworkManager;
 import com.vaszilvalentin.educore.window.WindowManager;
+import com.vaszilvalentin.educore.users.User;
+import com.vaszilvalentin.educore.auth.CurrentUser;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,66 +14,70 @@ import java.beans.PropertyChangeListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * A Swing panel for creating and submitting homework assignments. Handles user
- * input validation and communicates with HomeworkManager for persistence.
+ * A Swing panel that enables teachers to create new homework assignments.
+ * Features dropdown selection for classes and subjects, along with fields for
+ * assignment description and deadline. Integrates with HomeworkManager for
+ * persistence and includes comprehensive input validation.
  */
 public class CreateHomeworkPanel extends JPanel {
 
     // Window manager for navigation between panels
     private final WindowManager windowManager;
-    // Singleton reference to the current instance
+    
+    // Singleton reference for refresh functionality
     private static CreateHomeworkPanel currentInstance;
+    
+    // Listens for theme changes to update UI styling
     private final PropertyChangeListener themeChangeListener = new ThemeChangeListener();
 
-    // Form input components
-    private JTextField subjectField;
-    private JTextField classField;
-    private JTextArea descriptionArea;
-    private JTextField deadlineField;
+    // UI Components
+    private JComboBox<String> classComboBox;    // Dropdown for class selection
+    private JComboBox<String> subjectComboBox;  // Dropdown for subject selection
+    private JTextArea descriptionArea;          // Multiline text area for assignment details
+    private JTextField deadlineField;           // Input field for due date/time
+
+    // Data stores for combobox mappings
+    private final Map<String, String> classIdMap = new HashMap<>();  // Maps display names to class IDs
+    private final Map<String, String> subjectMap = new HashMap<>();  // Maps display names to subject codes
+    
+    // Reference to currently logged-in teacher
+    private final User currentTeacher;
 
     /**
-     * Constructs the homework creation panel.
-     *
-     * @param windowManager The window manager for navigation control
+     * Constructs a new CreateHomeworkPanel with the specified window manager.
+     * Initializes UI components and loads teacher-specific data for dropdowns.
+     * 
+     * @param windowManager The window manager responsible for navigation
      */
     public CreateHomeworkPanel(WindowManager windowManager) {
         this.windowManager = windowManager;
+        this.currentTeacher = CurrentUser.getCurrentUser();
         currentInstance = this;
         initPanel();
         UIManager.addPropertyChangeListener(themeChangeListener);
-
     }
 
     /**
-     * Initializes the panel UI components and layout.
+     * Initializes the panel layout and components.
+     * Clears existing components and rebuilds the UI from scratch.
      */
     private void initPanel() {
         removeAll();
         setLayout(new GridBagLayout());
         setBackground(UIManager.getColor("Panel.background"));
-
-        // Main form panel with centered positioning
-        JPanel formPanel = createFormPanel();
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.insets = new Insets(50, 50, 50, 50);
-        gbc.anchor = GridBagConstraints.CENTER;
-        add(formPanel, gbc);
-
+        add(createFormPanel());
         revalidate();
         repaint();
     }
 
     /**
-     * Creates the main form panel containing all input fields.
-     *
-     * @return Configured JPanel with form components
+     * Creates and configures the main form panel containing all input fields.
+     * 
+     * @return A fully configured JPanel with the homework creation form
      */
     private JPanel createFormPanel() {
         JPanel formPanel = new JPanel(new GridBagLayout());
@@ -80,7 +86,7 @@ public class CreateHomeworkPanel extends JPanel {
                 new EmptyBorder(30, 40, 30, 40)
         ));
         formPanel.setBackground(UIManager.getColor("Table.background"));
-        formPanel.setPreferredSize(new Dimension(600, 700));
+        formPanel.setPreferredSize(new Dimension(600, 600));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 0, 15, 0);
@@ -88,38 +94,37 @@ public class CreateHomeworkPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
+        // Configure title label with consistent styling
         Font labelFont = getFont().deriveFont(Font.BOLD, 14);
-
-        // Title section
-        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        titlePanel.setOpaque(false);
         JLabel titleLabel = new JLabel("Create New Homework");
         titleLabel.setFont(labelFont.deriveFont(Font.BOLD, 18));
-        titlePanel.add(titleLabel);
-
+        
+        // Add title to form
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        formPanel.add(titlePanel, gbc);
+        formPanel.add(titleLabel, gbc);
         gbc.gridwidth = 1;
 
-        // Class input field
+        // Add class selection components
         gbc.gridy++;
         formPanel.add(createLabel("Class:", labelFont), gbc);
-        classField = new JTextField(25);
-        classField.setFont(getFont().deriveFont(14f));
+        classComboBox = new JComboBox<>();
+        classComboBox.setFont(getFont().deriveFont(14f));
+        loadTeacherClasses();
         gbc.gridy++;
-        formPanel.add(classField, gbc);
+        formPanel.add(classComboBox, gbc);
 
-        // Subject input field
+        // Add subject selection components
         gbc.gridy++;
         formPanel.add(createLabel("Subject:", labelFont), gbc);
-        subjectField = new JTextField(25);
-        subjectField.setFont(getFont().deriveFont(14f));
+        subjectComboBox = new JComboBox<>();
+        subjectComboBox.setFont(getFont().deriveFont(14f));
+        loadTeacherSubjects();
         gbc.gridy++;
-        formPanel.add(subjectField, gbc);
+        formPanel.add(subjectComboBox, gbc);
 
-        // Description field with scrollable text area
+        // Configure description field with scroll pane
         gbc.gridy++;
         formPanel.add(createLabel("Description:", labelFont), gbc);
         descriptionArea = new JTextArea(6, 30);
@@ -130,58 +135,88 @@ public class CreateHomeworkPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(descriptionArea,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setPreferredSize(new Dimension(600, 120));
-        scrollPane.setMinimumSize(new Dimension(600, 120));
-        scrollPane.setMaximumSize(new Dimension(600, 300));
-
         gbc.gridy++;
         formPanel.add(scrollPane, gbc);
 
-        // Deadline field with default tomorrow 4PM value
+        // Configure deadline field with default value
         gbc.gridy++;
         formPanel.add(createLabel("Deadline (yyyy-MM-dd HH:mm):", labelFont), gbc);
         deadlineField = new JTextField(25);
         deadlineField.setFont(getFont().deriveFont(14f));
-        LocalDateTime defaultDeadline = LocalDateTime.now().plusDays(1).withHour(16).withMinute(0);
-        deadlineField.setText(defaultDeadline.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        deadlineField.setText(LocalDateTime.now().plusDays(1).withHour(16).withMinute(0)
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         gbc.gridy++;
         formPanel.add(deadlineField, gbc);
 
-        // Action buttons panel
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        // Add action buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         buttonPanel.setOpaque(false);
-        buttonPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
-
-        buttonPanel.add(Box.createHorizontalGlue());
 
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.setPreferredSize(new Dimension(120, 35));
-        cancelButton.setFont(getFont().deriveFont(14f));
         cancelButton.addActionListener(e -> windowManager.switchToPage("TeacherHomework"));
-        buttonPanel.add(cancelButton);
-
-        buttonPanel.add(Box.createRigidArea(new Dimension(20, 0)));
 
         JButton createButton = new JButton("Create");
-        createButton.setPreferredSize(new Dimension(120, 35));
-        createButton.setFont(getFont().deriveFont(14f));
         createButton.addActionListener(e -> createHomework());
+
+        buttonPanel.add(cancelButton);
         buttonPanel.add(createButton);
 
         gbc.gridy++;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
         formPanel.add(buttonPanel, gbc);
 
         return formPanel;
     }
 
     /**
-     * Creates a styled label for form fields.
-     *
-     * @param text The label text
-     * @param font The font to use
-     * @return Configured JLabel instance
+     * Loads the current teacher's classes into the class combobox.
+     * Maps display names to actual class IDs for later reference.
+     */
+    private void loadTeacherClasses() {
+        classIdMap.clear();
+        classComboBox.removeAllItems();
+
+        if (currentTeacher != null && currentTeacher.getTaughtClasses() != null) {
+            for (String classId : currentTeacher.getTaughtClasses()) {
+                String displayName = "Class " + classId;
+                classIdMap.put(displayName, classId);
+                classComboBox.addItem(displayName);
+            }
+
+            // Select first class by default if available
+            if (classComboBox.getItemCount() > 0) {
+                classComboBox.setSelectedIndex(0);
+            }
+        }
+    }
+
+    /**
+     * Loads the current teacher's subjects into the subject combobox.
+     * Maintains mapping between display names and subject codes.
+     */
+    private void loadTeacherSubjects() {
+        subjectMap.clear();
+        subjectComboBox.removeAllItems();
+
+        if (currentTeacher != null && currentTeacher.getSubjects() != null) {
+            for (String subject : currentTeacher.getSubjects()) {
+                String displayName = subject;
+                subjectMap.put(displayName, subject);
+                subjectComboBox.addItem(displayName);
+            }
+
+            // Select first subject by default if available
+            if (subjectComboBox.getItemCount() > 0) {
+                subjectComboBox.setSelectedIndex(0);
+            }
+        }
+    }
+
+    /**
+     * Creates a consistently styled label for form fields.
+     * 
+     * @param text The text to display on the label
+     * @param font The font to use for the label
+     * @return A configured JLabel instance
      */
     private JLabel createLabel(String text, Font font) {
         JLabel label = new JLabel(text);
@@ -191,24 +226,21 @@ public class CreateHomeworkPanel extends JPanel {
     }
 
     /**
-     * Validates inputs and creates a new homework assignment. Shows error
-     * dialogs for invalid data before submission.
+     * Validates input and creates a new homework assignment.
+     * Performs comprehensive validation before persisting the assignment.
      */
     private void createHomework() {
-        String classId = classField.getText().trim();
-        String subject = subjectField.getText().trim();
+        // Get selected values from comboboxes
+        String classDisplay = (String) classComboBox.getSelectedItem();
+        String subjectDisplay = (String) subjectComboBox.getSelectedItem();
+
+        // Get mapped values
+        String classId = classIdMap.get(classDisplay);
+        String subject = subjectMap.get(subjectDisplay);
         String description = descriptionArea.getText().trim();
         String deadlineStr = deadlineField.getText().trim();
 
-        // Input validation checks
-        if (classId.isEmpty()) {
-            showError("Please enter a class.");
-            return;
-        }
-        if (subject.isEmpty()) {
-            showError("Please enter a subject.");
-            return;
-        }
+        // Validate required fields
         if (description.isEmpty()) {
             showError("Please enter a description.");
             return;
@@ -218,20 +250,19 @@ public class CreateHomeworkPanel extends JPanel {
             return;
         }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
         try {
-            LocalDateTime deadline = LocalDateTime.parse(deadlineStr, formatter);
+            // Parse and validate deadline
+            LocalDateTime deadline = LocalDateTime.parse(deadlineStr,
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-            // Deadline must be in the future
             if (deadline.isBefore(LocalDateTime.now())) {
                 showError("Deadline must be in the future.");
                 return;
             }
 
-            // Create and persist the homework
+            // Create and persist new homework
             Homework newHomework = new Homework(
-                    null, // ID generated by HomeworkManager
+                    null,
                     description,
                     deadline,
                     subject,
@@ -239,7 +270,7 @@ public class CreateHomeworkPanel extends JPanel {
             );
 
             HomeworkManager.addHomework(newHomework);
-            JOptionPane.showMessageDialog(this, "Homework created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            showMessage("Homework created successfully!");
             windowManager.switchToPage("TeacherHomework");
 
         } catch (DateTimeParseException ex) {
@@ -248,8 +279,8 @@ public class CreateHomeworkPanel extends JPanel {
     }
 
     /**
-     * Displays an error message dialog.
-     *
+     * Displays an error message dialog with standardized formatting.
+     * 
      * @param message The error message to display
      */
     private void showError(String message) {
@@ -257,29 +288,28 @@ public class CreateHomeworkPanel extends JPanel {
     }
 
     /**
+     * Displays a success message dialog with standardized formatting.
+     * 
+     * @param message The success message to display
+     */
+    private void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
      * Refreshes the current panel instance if it exists.
+     * Used to update the UI after external changes.
      */
     public static void refreshCurrentInstance() {
         if (currentInstance != null) {
-            currentInstance.refreshData();
+            currentInstance.initPanel();
         }
     }
 
     /**
-     * Refreshes panel data and UI components.
-     */
-    private void refreshData() {
-        initPanel();
-        revalidate();
-        repaint();
-    }
-
-    /**
-     * Listens for Look and Feel changes and updates component styles
-     * accordingly.
+     * Listens for theme changes and updates the panel's appearance accordingly.
      */
     private class ThemeChangeListener implements PropertyChangeListener {
-
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             if ("lookAndFeel".equals(evt.getPropertyName())
@@ -289,9 +319,13 @@ public class CreateHomeworkPanel extends JPanel {
         }
     }
 
+    /**
+     * Cleans up resources when the panel is removed.
+     * Unregisters theme change listener to prevent memory leaks.
+     */
     @Override
     public void removeNotify() {
         super.removeNotify();
-        UIManager.removePropertyChangeListener(themeChangeListener); // Prevent memory leak
+        UIManager.removePropertyChangeListener(themeChangeListener);
     }
 }

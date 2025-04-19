@@ -3,101 +3,132 @@ package com.vaszilvalentin.educore.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import javax.swing.*;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+/**
+ * This class provides functionality to fetch the current date and time from an external API (TimeZoneDB) asynchronously.
+ * It handles potential errors such as timeouts and API issues by falling back to the system's local time when necessary.
+ */
 public class NetworkTimeChecker {
 
+    // Timeout duration for the HTTP request to the external API
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(5);
-    private static final String[] TIME_API_URLS = {
-        "https://timeapi.io/api/Time/current/zone?timeZone=UTC",
-        "https://worldtimeapi.org/api/timezone/Etc/UTC",
-        "https://time.akamai.com/"
-    };
+    
+    // Formatter to parse the date-time string returned by the TimeZoneDB API
+    private static final DateTimeFormatter TIMEZONEDB_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    
+    // URL of the TimeZoneDB API that provides the time for the Europe/Budapest timezone
+    private static final String TIMEZONEDB_URL = "http://api.timezonedb.com/v2.1/get-time-zone?key=L4N9D27B7Y35&format=json&by=zone&zone=Europe/Budapest";
 
+    /**
+     * Asynchronously fetches the current time from the TimeZoneDB API.
+     * If the API call fails, it falls back to the system time.
+     * 
+     * @return a CompletableFuture containing the current time as a LocalDateTime object
+     */
     public static CompletableFuture<LocalDateTime> getNetworkTimeAsync() {
+        // Initiating asynchronous task using CompletableFuture
         return CompletableFuture.supplyAsync(() -> {
-            HttpClient client = HttpClient.newHttpClient();
-            
-            // Try multiple endpoints in case one fails
-            for (String apiUrl : TIME_API_URLS) {
-                try {
-                    HttpRequest request = HttpRequest.newBuilder()
-                            .uri(URI.create(apiUrl))
-                            .timeout(REQUEST_TIMEOUT)
-                            .header("Accept", "application/json")
-                            .GET()
-                            .build();
+            // Create an HttpClient with a specified connection timeout
+            HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(REQUEST_TIMEOUT)
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .build();
 
-                    HttpResponse<String> response = client.send(
-                        request, 
-                        HttpResponse.BodyHandlers.ofString()
-                    );
+            try {
+                // Log message indicating the start of the request
+                System.out.println("Fetching time from TimeZoneDB API");
+                
+                // Create an HTTP GET request to the TimeZoneDB API with necessary headers
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(TIMEZONEDB_URL))
+                    .timeout(REQUEST_TIMEOUT)
+                    .header("Accept", "application/json")
+                    .header("User-Agent", "Mozilla/5.0")
+                    .GET()
+                    .build();
 
-                    if (response.statusCode() == 200) {
-                        JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
-                        return parseTimeResponse(json, apiUrl);
+                // Send the asynchronous HTTP request and get the response
+                CompletableFuture<HttpResponse<String>> future = client.sendAsync(
+                    request, 
+                    HttpResponse.BodyHandlers.ofString()
+                );
+
+                // Wait for the response and apply a timeout to prevent long blocking
+                HttpResponse<String> response = future.get(REQUEST_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
+
+                // If the response status is OK (200), process the response
+                if (response.statusCode() == 200) {
+                    JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
+                    
+                    // Check for any API errors indicated in the response
+                    if (json.has("status") && !json.get("status").getAsString().equals("OK")) {
+                        String message = json.has("message") ? json.get("message").getAsString() : "Unknown error";
+                        throw new RuntimeException("TimeZoneDB API error: " + message);
                     }
-                } catch (IOException e) {
-                    // Try next endpoint if this one fails
-                    continue;
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                } catch (Exception e) {
-                    // Continue to next endpoint
-                    continue;
+                    
+                    // Parse and return the time from the JSON response
+                    LocalDateTime time = parseTimeZoneDbResponse(json);
+                    if (time != null) {
+                        return time;
+                    }
+                    throw new RuntimeException("Failed to parse TimeZoneDB response");
+                } else {
+                    // Handle unexpected status codes (non-200)
+                    throw new RuntimeException("TimeZoneDB API returned status: " + response.statusCode());
                 }
+            } catch (TimeoutException e) {
+                // Handle timeout exception (request timed out)
+                throw new RuntimeException("Timeout while connecting to TimeZoneDB API");
+            } catch (InterruptedException e) {
+                // Handle interruption exception (task interrupted while waiting for response)
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Request interrupted");
+            } catch (ExecutionException e) {
+                // Handle execution exceptions (issues during request execution)
+                throw new RuntimeException("Error communicating with TimeZoneDB API: " + e.getMessage());
+            } catch (Exception e) {
+                // Handle unexpected exceptions (any other issues)
+                throw new RuntimeException("Unexpected error: " + e.getMessage());
             }
-            
-            showError("Could not retrieve time from any server. Using local time as fallback.");
-            return LocalDateTime.now(); // fallback
+        }).exceptionally(ex -> {
+            // Log the error and fall back to the system's current time if an error occurs
+            System.err.println("Falling back to system time. Error: " + ex.getMessage());
+            return LocalDateTime.now(ZoneId.of("Europe/Budapest"));
         });
     }
 
-    private static LocalDateTime parseTimeResponse(JsonObject json, String apiUrl) {
+    /**
+     * Parses the response from TimeZoneDB API to extract the current time as LocalDateTime.
+     * 
+     * @param json the JSON object containing the API response
+     * @return the parsed LocalDateTime if the time is available, null otherwise
+     */
+    private static LocalDateTime parseTimeZoneDbResponse(JsonObject json) {
         try {
-            if (apiUrl.contains("timeapi.io")) {
-                // Parse timeapi.io response
-                int year = json.get("year").getAsInt();
-                int month = json.get("month").getAsInt();
-                int day = json.get("day").getAsInt();
-                int hour = json.get("hour").getAsInt();
-                int minute = json.get("minute").getAsInt();
-                int second = json.get("seconds").getAsInt();
-                return LocalDateTime.of(year, month, day, hour, minute, second);
-            } else if (apiUrl.contains("worldtimeapi.org")) {
-                // Parse worldtimeapi.org response
-                String datetime = json.get("datetime").getAsString();
-                return LocalDateTime.parse(datetime.substring(0, 19));
-            } else if (apiUrl.contains("akamai.com")) {
-                // Parse Akamai response (plain text timestamp)
-                long timestamp = Long.parseLong(json.getAsString());
-                return LocalDateTime.ofEpochSecond(timestamp, 0, ZoneOffset.UTC);
+            // Check if the response contains the "formatted" field with the time string
+            if (json.has("formatted")) {
+                String formatted = json.get("formatted").getAsString();
+                // Parse the time using the defined DateTimeFormatter
+                return LocalDateTime.parse(formatted, TIMEZONEDB_FORMATTER);
             }
+            // Return null if the time field is not found in the response
+            return null;
         } catch (Exception e) {
-            showError("Error parsing time response: " + e.getMessage());
+            // Handle errors during parsing and log the exception
+            System.err.println("Failed to parse TimeZoneDB response: " + e.getMessage());
+            return null;
         }
-        return LocalDateTime.now();
-    }
-
-    private static void showError(String message) {
-        SwingUtilities.invokeLater(() -> 
-            JOptionPane.showMessageDialog(
-                null,
-                message,
-                "Network Time Error",
-                JOptionPane.ERROR_MESSAGE
-            )
-        );
     }
 }

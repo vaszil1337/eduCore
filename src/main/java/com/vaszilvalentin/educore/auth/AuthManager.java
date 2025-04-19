@@ -7,6 +7,7 @@ package com.vaszilvalentin.educore.auth;
  * @author vaszilvalentin
  */
 import com.vaszilvalentin.educore.Main;
+import com.vaszilvalentin.educore.log.LoginLogManager;
 import com.vaszilvalentin.educore.users.User;
 import com.vaszilvalentin.educore.users.UserManager;
 
@@ -47,6 +48,7 @@ public class AuthManager {
         if (user != null && UserManager.verifyPassword(user, inputPassword)) {
             // Set the authenticated user as the currently logged-in user
             CurrentUser.setCurrentUser(user);
+            LoginLogManager.logLogin(user.getId());
             return true;
         }
 
@@ -56,8 +58,15 @@ public class AuthManager {
     /**
      * Logs out the currently authenticated user.
      */
-    public static void logout() {
-        CurrentUser.setCurrentUser(null);
-        Main.restartApplication();
+    public static void logout(boolean isAppExit) {
+        if (CurrentUser.getCurrentUser() != null) {
+            LoginLogManager.logLogout(CurrentUser.getCurrentUser().getId());
+            CurrentUser.setCurrentUser(null);
+        }
+
+        if (!isAppExit) {
+            Main.restartApplication(); // Only restart if not exiting
+        }
     }
+
 }

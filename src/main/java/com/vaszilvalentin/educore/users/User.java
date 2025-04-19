@@ -1,21 +1,24 @@
 package com.vaszilvalentin.educore.users;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * Represents a user entity in the education system with role-based attributes.
- * Supports three main roles: student, teacher, and admin.
- * Uses the Builder pattern for flexible object creation.
- * Includes validation to ensure subjects and taughtClasses are only set for teachers.
+ * Supports three main roles: student, teacher, and admin. Uses the Builder
+ * pattern for flexible object creation. Includes validation to ensure subjects
+ * and taughtClasses are only set for teachers.
  */
 public class User {
+
     private String id;                   // Unique identifier for the user
     private String name;                 // Full name of the user
     private String email;                // Email address (used as username)
     private String password;             // Encrypted password
-    private int age;                     // Age (primarily for students)
+    private LocalDate birthDate;         // Birth date (instead of age)
     private String role;                 // Role: "student", "teacher", or "admin"
     private String classId;              // Class identifier (for students)
     private List<String> subjects;       // List of teaching subjects (for teachers)
@@ -27,6 +30,7 @@ public class User {
      * Includes validation for role-specific fields.
      */
     public static class Builder {
+
         // Required parameters
         private final String name;
         private final String email;
@@ -35,7 +39,7 @@ public class User {
         // Optional parameters with defaults
         private String id;
         private String password;
-        private int age;
+        private LocalDate birthDate;
         private String classId;
         private List<String> subjects = new ArrayList<>();
         private List<String> taughtClasses = new ArrayList<>();
@@ -44,7 +48,7 @@ public class User {
             this.name = Objects.requireNonNull(name, "Name cannot be null");
             this.email = Objects.requireNonNull(email, "Email cannot be null");
             this.role = Objects.requireNonNull(role, "Role cannot be null");
-            
+
             // Initialize lists only if the user is a teacher
             if (!"teacher".equals(role)) {
                 this.subjects = null;
@@ -62,8 +66,8 @@ public class User {
             return this;
         }
 
-        public Builder age(int age) {
-            this.age = age;
+        public Builder birthDate(LocalDate birthDate) {
+            this.birthDate = birthDate;
             return this;
         }
 
@@ -76,9 +80,7 @@ public class User {
             if (!"teacher".equals(role)) {
                 throw new IllegalArgumentException("Subjects can only be set for teachers.");
             }
-            if (subjects != null) {
-                this.subjects = new ArrayList<>(subjects);
-            }
+            this.subjects = subjects != null ? new ArrayList<>(subjects) : null;
             return this;
         }
 
@@ -86,9 +88,7 @@ public class User {
             if (!"teacher".equals(role)) {
                 throw new IllegalArgumentException("Taught classes can only be set for teachers.");
             }
-            if (taughtClasses != null) {
-                this.taughtClasses = new ArrayList<>(taughtClasses);
-            }
+            this.taughtClasses = taughtClasses != null ? new ArrayList<>(taughtClasses) : null;
             return this;
         }
 
@@ -102,7 +102,7 @@ public class User {
         this.name = builder.name;
         this.email = builder.email;
         this.password = builder.password;
-        this.age = builder.age;
+        this.birthDate = builder.birthDate;
         this.role = builder.role;
         this.classId = builder.classId;
         this.subjects = builder.subjects;
@@ -110,30 +110,51 @@ public class User {
     }
 
     // Getters and Setters (with defensive copies where needed)
+    public String getId() {
+        return id;
+    }
 
-    public String getId() { return id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public void setId(String id) { this.id = id; }
+    public String getName() {
+        return name;
+    }
 
-    public String getName() { return name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getEmail() { return email; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public void setEmail(String email) { this.email = email; }
+    public String getPassword() {
+        return password;
+    }
 
-    public String getPassword() { return password; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-    public void setPassword(String password) { this.password = password; }
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
 
-    public int getAge() { return age; }
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
 
-    public void setAge(int age) { this.age = age; }
+    public String getRole() {
+        return role;
+    }
 
-    public String getRole() { return role; }
-
-    public void setRole(String role) { 
+    public void setRole(String role) {
         this.role = role;
         // If role changes to non-teacher, clear teacher-specific fields
         if (!"teacher".equals(role)) {
@@ -142,19 +163,23 @@ public class User {
         }
     }
 
-    public String getClassId() { return classId; }
+    public String getClassId() {
+        return classId;
+    }
 
-    public void setClassId(String classId) { this.classId = classId; }
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
 
     public List<String> getSubjects() {
-        return subjects == null ? null : new ArrayList<>(subjects);
+        return subjects == null ? new ArrayList<>() : new ArrayList<>(subjects);
     }
 
     public void setSubjects(List<String> subjects) {
         if (!"teacher".equals(role)) {
             throw new IllegalArgumentException("Subjects can only be set for teachers.");
         }
-        this.subjects = subjects == null ? null : new ArrayList<>(subjects);
+        this.subjects = subjects != null ? new ArrayList<>(subjects) : null;
     }
 
     public void addSubject(String subject) {
@@ -168,14 +193,14 @@ public class User {
     }
 
     public List<String> getTaughtClasses() {
-        return taughtClasses == null ? null : new ArrayList<>(taughtClasses);
+        return taughtClasses == null ? new ArrayList<>() : new ArrayList<>(taughtClasses);
     }
 
     public void setTaughtClasses(List<String> taughtClasses) {
         if (!"teacher".equals(role)) {
             throw new IllegalArgumentException("Taught classes can only be set for teachers.");
         }
-        this.taughtClasses = taughtClasses == null ? null : new ArrayList<>(taughtClasses);
+        this.taughtClasses = taughtClasses != null ? new ArrayList<>(taughtClasses) : null;
     }
 
     public void addTaughtClass(String classId) {
@@ -188,14 +213,25 @@ public class User {
         this.taughtClasses.add(classId);
     }
 
+    public int getAge() {
+        if (birthDate != null) {
+            return Period.between(birthDate, LocalDate.now()).getYears();
+        }
+        return 0;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         User user = (User) o;
-        return Objects.equals(id, user.id) &&
-               Objects.equals(email, user.email);
+        return Objects.equals(id, user.id)
+                && Objects.equals(email, user.email);
     }
 
     @Override
@@ -205,15 +241,15 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", role='" + role + '\'' +
-                ", age=" + age +
-                ", classId='" + classId + '\'' +
-                ", subjects=" + subjects +
-                ", taughtClasses=" + taughtClasses +
-                '}';
+        return "User{"
+                + "id='" + id + '\''
+                + ", name='" + name + '\''
+                + ", email='" + email + '\''
+                + ", role='" + role + '\''
+                + ", birthDate=" + birthDate
+                + ", classId='" + classId + '\''
+                + ", subjects=" + subjects
+                + ", taughtClasses=" + taughtClasses
+                + '}';
     }
 }

@@ -18,6 +18,7 @@ import java.util.Map;
 import com.vaszilvalentin.educore.utils.NetworkTimeChecker;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * This panel is responsible for displaying, submitting, and managing homework
@@ -281,7 +282,8 @@ public class HomeworkPanel extends JPanel {
 
         Homework.Submission submission = homework.getSubmission(currentStudentId);
 
-        if (submission != null && submission.getGrade() != null && !submission.getGrade().isBlank()) {
+        if (submission != null && submission.getGrade() != null
+                && !submission.getGrade().isBlank() && !submission.getGrade().equals("-")) {
             JOptionPane.showMessageDialog(this,
                     "You have already received a grade for this homework. Resubmission is not allowed.",
                     "Submission Not Allowed",
@@ -317,6 +319,20 @@ public class HomeworkPanel extends JPanel {
         }
 
         JFileChooser fileChooser = new JFileChooser();
+
+        // Remove the default "All files" filter
+        fileChooser.setAcceptAllFileFilterUsed(false);
+
+        // Add individual filters
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Word Documents (*.docx)", "docx"));
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("PDF Files (*.pdf)", "pdf"));
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Image Files (*.png, *.jpg, *.jpeg)", "png", "jpg", "jpeg"));
+
+        // Set the combined filter as default
+        fileChooser.setFileFilter(new FileNameExtensionFilter(
+                "All Supported Formats (*.docx, *.pdf, *.png, *.jpg, *.jpeg)",
+                "docx", "pdf", "png", "jpg", "jpeg"));
+
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             HomeworkManager.addSubmission(homeworkId, currentStudentId,
                     fileChooser.getSelectedFile().getAbsolutePath(), LocalDateTime.now());

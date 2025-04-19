@@ -2,7 +2,7 @@ package com.vaszilvalentin.educore.homework;
 
 public class CurrentHomework {
 
-    // Statikus változó tárolja az editHomeworkId-t
+    // Static variables for storing current values
     private static String editHomeworkId;
     private static String viewHomeworkId;
 

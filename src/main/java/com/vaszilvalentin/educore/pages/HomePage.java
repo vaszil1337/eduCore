@@ -95,19 +95,19 @@ public class HomePage extends javax.swing.JPanel {
         int row = 0;
 
         if (role.equals("student")) {
-            addNavButton("Homework", "StudentHomework", row++);
-            addNavButton("Absences", "StudentAbsences", row++);
+            addNavButton("Homeworks", "StudentHomework", row++);
+            addNavButton("Absences", "StudentAbsence", row++);
             addNavButton("My Profile", "Profile", row++);
 
         } else if (role.equals("teacher")) {
-            addNavButton("Assignments", "TeacherHomework", row++);
-            addNavButton("Enter Absences", "AbsenceEntry", row++);
+            addNavButton("Homeworks", "TeacherHomework", row++);
+            addNavButton("Absences", "TeacherAbsence", row++);
             addNavButton("Student List", "StudentList", row++);
             addNavButton("My Profile", "Profile", row++);
 
         } else if (role.equals("admin")) {
-            addNavButton("New User", "CreateUser", row++);
             addNavButton("Manage Users", "ManageUsers", row++);
+            addNavButton("Browse login logs", "LoginLogs", row++);
             addNavButton("My Profile", "Profile", row++);
         }
     }
@@ -276,7 +276,7 @@ public class HomePage extends javax.swing.JPanel {
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         JOptionPane.showMessageDialog(this, "Logout successful!");
-        AuthManager.logout();
+        AuthManager.logout(false);
     }//GEN-LAST:event_logoutButtonActionPerformed
 
 

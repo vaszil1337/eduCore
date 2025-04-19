@@ -38,7 +38,10 @@ public class UserManager {
 
     // Generates a random password and encrypts it
     private static String generatePassword() {
-        return EncryptionUtils.encrypt(PasswordUtils.generatePassword(12));
+        String genpa = PasswordUtils.generatePassword(12);
+        System.out.println(genpa);
+
+        return EncryptionUtils.encrypt(genpa);
     }
 
     // Verifies if the provided password matches the stored password for a user
@@ -72,11 +75,11 @@ public class UserManager {
         return false; // User not found
     }
 
-    // Checks if a user with the given ID or email already exists
-    public static boolean userExists(String id, String email) {
+    // Checks if a user with the given email already exists
+    public static boolean userExists(String email) {
         List<User> users = UserDatabase.loadUsers();
         for (User user : users) {
-            if (user.getId().equals(id) || user.getEmail().equals(email)) {
+            if (user.getEmail().equals(email)) {
                 return true; // User exists
             }
         }

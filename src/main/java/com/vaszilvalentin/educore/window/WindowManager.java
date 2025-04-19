@@ -12,21 +12,34 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatPropertiesLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.formdev.flatlaf.util.SystemInfo;
+import com.vaszilvalentin.educore.auth.AuthManager;
+import com.vaszilvalentin.educore.auth.CurrentUser;
 import com.vaszilvalentin.educore.pages.HomePage;
 import com.vaszilvalentin.educore.pages.LandingPage;
 import com.vaszilvalentin.educore.pages.LoginPage;
+import com.vaszilvalentin.educore.pages.subpages.AbsencePanel;
+import com.vaszilvalentin.educore.pages.subpages.CreateAbsencePanel;
 import com.vaszilvalentin.educore.pages.subpages.CreateHomeworkPanel;
+import com.vaszilvalentin.educore.pages.subpages.CreateUserPanel;
 import com.vaszilvalentin.educore.pages.subpages.EditHomeworkPanel;
+import com.vaszilvalentin.educore.pages.subpages.EditUserPanel;
 import com.vaszilvalentin.educore.pages.subpages.HomeworkDetailsPanel;
 import com.vaszilvalentin.educore.pages.subpages.HomeworkPanel;
+import com.vaszilvalentin.educore.pages.subpages.LoginLogsPanel;
+import com.vaszilvalentin.educore.pages.subpages.ManageUsers;
 import com.vaszilvalentin.educore.pages.subpages.PasswordUpdate;
 import com.vaszilvalentin.educore.pages.subpages.ProfilePanel;
+import com.vaszilvalentin.educore.pages.subpages.StudentListPanel;
+import com.vaszilvalentin.educore.pages.subpages.TeacherAbsencePanel;
 import com.vaszilvalentin.educore.pages.subpages.TeacherHomeworkPanel;
+import com.vaszilvalentin.educore.pages.subpages.ViewUserPanel;
 import com.vaszilvalentin.educore.preference.PreferenceManager;
 import com.vaszilvalentin.educore.preference.Theme;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -48,30 +61,45 @@ public class WindowManager {
         SwingUtilities.invokeLater(this::initializeWindow);
     }
 
-    // Initializes the application window and loads the first page
     private void initializeWindow() {
-        frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame = new JFrame("eduCore");
+
+        // Prevent the default close operation so we can handle it manually
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Full screen mode
         frame.setLocationRelativeTo(null); // Center the window on the screen
 
-        // macOS-specific UI configurations
+        // macOS-specific UI configuration
         if (SystemInfo.isMacOS) {
             frame.getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
         }
 
-        // Use CardLayout for managing multiple pages
+        // Handle window closing (e.g., user clicks the 'X' button)
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (CurrentUser.getCurrentUser() != null) {
+                    AuthManager.logout(true); // true = app exit, no restart
+                }
+
+                frame.dispose();
+                System.exit(0);
+            }
+        });
+
+        // Initialize layout and main panel
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
         frame.add(mainPanel);
 
+        // Add menu bar
         frame.setJMenuBar(createMenuBar());
 
         // Create and add the initial page (Landing by default)
         JPanel initialPage = createPage("Landing");
         addPage("Landing", initialPage);
 
-        // Handle component resizing dynamically
+        // Handle dynamic resizing of components
         frame.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentResized(java.awt.event.ComponentEvent evt) {
@@ -79,6 +107,7 @@ public class WindowManager {
             }
         });
 
+        // Show the window and navigate to the initial page
         frame.setVisible(true);
         switchToPage("Landing");
     }
@@ -186,6 +215,24 @@ public class WindowManager {
                 return new HomeworkDetailsPanel(this);
             case "Profile":
                 return new ProfilePanel(this);
+            case "StudentAbsence":
+                return new AbsencePanel(this);
+            case "TeacherAbsence":
+                return new TeacherAbsencePanel(this);
+            case "CreateAbsence":
+                return new CreateAbsencePanel(this);
+            case "StudentList":
+                return new StudentListPanel(this);
+            case "LoginLogs":
+                return new LoginLogsPanel(this);
+            case "ManageUsers":
+                return new ManageUsers(this);
+            case "CreateUser":
+                return new CreateUserPanel(this);
+            case "EditUser":
+                return new EditUserPanel(this);
+            case "UserDetails":
+                return new ViewUserPanel(this);
             default:
                 throw new IllegalArgumentException("Unknown page: " + pageName);
         }

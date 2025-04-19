@@ -72,7 +72,7 @@ public class ProfilePanel extends JPanel {
                 new EmptyBorder(30, 40, 30, 40)
         ));
         card.setBackground(UIManager.getColor("Table.background"));
-        card.setPreferredSize(new Dimension(600, 550));
+        card.setPreferredSize(new Dimension(600, 580));
 
         // Avatar setup
         avatarLabel = new JLabel();
@@ -84,7 +84,7 @@ public class ProfilePanel extends JPanel {
 
         // Role label setup
         roleLabel = new JLabel(user.getRole().toUpperCase());
-        roleLabel.setFont(getFont().deriveFont(Font.BOLD, 14));
+        roleLabel.setFont(getFont().deriveFont(Font.BOLD, 16));
         roleLabel.setOpaque(true);
         roleLabel.setBorder(new EmptyBorder(5, 15, 5, 15));
         roleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -116,13 +116,19 @@ public class ProfilePanel extends JPanel {
             }
         }
         
+        // Student-specific information
+        if ("student".equalsIgnoreCase(user.getRole())) {
+            card.add(createLabeledValue("Class: ", user.getClassId()));
+            card.add(Box.createRigidArea(new Dimension(0, 10)));
+        }
+        
         // Change password button
         JButton changePasswordButton = new JButton("Change Password");
-        changePasswordButton.setPreferredSize(new Dimension(140, 30));
-        changePasswordButton.setFont(getFont().deriveFont(Font.PLAIN, 13));
+        changePasswordButton.setPreferredSize(new Dimension(140, 35));
+        changePasswordButton.setFont(getFont().deriveFont(Font.BOLD, 13));
         changePasswordButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         changePasswordButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Password change dialog (to be implemented later)");
+            windowManager.switchToPage("PasswordUpdate");
         });
         card.add(changePasswordButton);
         card.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -130,7 +136,7 @@ public class ProfilePanel extends JPanel {
         // Back button
         JButton backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(120, 35));
-        backButton.setFont(getFont().deriveFont(Font.BOLD, 14));
+        backButton.setFont(getFont().deriveFont(Font.BOLD, 15));
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         backButton.addActionListener(e -> windowManager.switchToPage("Home"));
         card.add(Box.createVerticalGlue());
@@ -153,10 +159,10 @@ public class ProfilePanel extends JPanel {
         panel.setOpaque(false);
 
         JLabel labelPart = new JLabel(label + ": ");
-        labelPart.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        labelPart.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 
         JLabel valuePart = new JLabel(value);
-        valuePart.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        valuePart.setFont(new Font("Segoe UI", Font.BOLD, 18));
 
         panel.add(labelPart);
         panel.add(valuePart);

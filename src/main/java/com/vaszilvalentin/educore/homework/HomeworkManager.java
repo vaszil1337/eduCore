@@ -15,8 +15,8 @@ import java.util.Map;
 public class HomeworkManager {
 
     /**
-     * Adds a new homework assignment to the database.
-     * Automatically assigns a unique ID.
+     * Adds a new homework assignment to the database. Automatically assigns a
+     * unique ID.
      *
      * @param homework Homework object to add
      */
@@ -88,16 +88,20 @@ public class HomeworkManager {
     }
 
     /**
-     * Updates a specific homework assignment by ID.
+     * Updates a specific homework assignment by ID while preserving existing
+     * submissions.
      *
-     * @param id              The homework ID to update
+     * @param id The homework ID to update
      * @param updatedHomework The updated homework object
      */
     public static void updateHomework(String id, Homework updatedHomework) {
         List<Homework> homeworkList = HomeworkDatabase.loadHomework();
 
         for (int i = 0; i < homeworkList.size(); i++) {
-            if (homeworkList.get(i).getId().equals(id)) {
+            Homework existingHomework = homeworkList.get(i);
+            if (existingHomework.getId().equals(id)) {
+                // Preserve the existing submissions
+                updatedHomework.setSubmissions(existingHomework.getSubmissions());
                 homeworkList.set(i, updatedHomework);
                 break;
             }
@@ -118,16 +122,16 @@ public class HomeworkManager {
     }
 
     /**
-     * Adds or replaces a submission for a student with submission date.
-     * Grade is initially set to "-" (ungraded).
+     * Adds or replaces a submission for a student with submission date. Grade
+     * is initially set to "-" (ungraded).
      *
-     * @param homeworkId      Homework ID
-     * @param studentId       Student ID
-     * @param filePath        Submitted file path
-     * @param submissionDate  When the work was submitted
+     * @param homeworkId Homework ID
+     * @param studentId Student ID
+     * @param filePath Submitted file path
+     * @param submissionDate When the work was submitted
      */
-    public static void addSubmission(String homeworkId, String studentId, 
-                                   String filePath, LocalDateTime submissionDate) {
+    public static void addSubmission(String homeworkId, String studentId,
+            String filePath, LocalDateTime submissionDate) {
         List<Homework> homeworkList = HomeworkDatabase.loadHomework();
 
         for (Homework homework : homeworkList) {
@@ -145,7 +149,7 @@ public class HomeworkManager {
      * Removes a student's submission from a homework.
      *
      * @param homeworkId Homework ID
-     * @param studentId  Student ID
+     * @param studentId Student ID
      */
     public static void removeSubmission(String homeworkId, String studentId) {
         List<Homework> homeworkList = HomeworkDatabase.loadHomework();
@@ -164,8 +168,8 @@ public class HomeworkManager {
      * Sets a grade for a student's submission.
      *
      * @param homeworkId Homework ID
-     * @param studentId  Student ID
-     * @param grade      Grade to assign (e.g., "5")
+     * @param studentId Student ID
+     * @param grade Grade to assign (e.g., "5")
      */
     public static void setSubmissionGrade(String homeworkId, String studentId, String grade) {
         List<Homework> homeworkList = HomeworkDatabase.loadHomework();
@@ -187,7 +191,7 @@ public class HomeworkManager {
      * Retrieves the grade for a student's submission.
      *
      * @param homeworkId Homework ID
-     * @param studentId  Student ID
+     * @param studentId Student ID
      * @return Grade as string, or "-" if ungraded
      */
     public static String getSubmissionGrade(String homeworkId, String studentId) {
@@ -209,7 +213,7 @@ public class HomeworkManager {
      * Gets the submission date for a student's homework.
      *
      * @param homeworkId Homework ID
-     * @param studentId  Student ID
+     * @param studentId Student ID
      * @return Submission date or null if not submitted
      */
     public static LocalDateTime getSubmissionDate(String homeworkId, String studentId) {
@@ -231,7 +235,7 @@ public class HomeworkManager {
      * Checks if a student has submitted their homework.
      *
      * @param homeworkId Homework ID
-     * @param studentId  Student ID
+     * @param studentId Student ID
      * @return true if submitted, false otherwise
      */
     public static boolean hasSubmitted(String homeworkId, String studentId) {

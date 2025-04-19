@@ -4,7 +4,6 @@
  */
 package com.vaszilvalentin.educore.pages;
 
-import com.vaszilvalentin.educore.utils.HomeworkAutoGrader;
 import com.vaszilvalentin.educore.window.WindowManager;
 
 /**
