@@ -15,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import io.github.cdimascio.dotenv.Dotenv;
 
 /**
  * This class provides functionality to fetch the current date and time from an external API (TimeZoneDB) asynchronously.
@@ -28,8 +29,11 @@ public class NetworkTimeChecker {
     // Formatter to parse the date-time string returned by the TimeZoneDB API
     private static final DateTimeFormatter TIMEZONEDB_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     
+    // Load dotenv file
+    private static Dotenv dotenv = Dotenv.load();
+    
     // URL of the TimeZoneDB API that provides the time for the Europe/Budapest timezone
-    private static final String TIMEZONEDB_URL = "http://api.timezonedb.com/v2.1/get-time-zone?key=L4N9D27B7Y35&format=json&by=zone&zone=Europe/Budapest";
+    private static final String TIMEZONEDB_URL = "http://api.timezonedb.com/v2.1/get-time-zone?key="+dotenv.get("TIME_API_KEY")+"&format=json&by=zone&zone=Europe/Budapest";
 
     /**
      * Asynchronously fetches the current time from the TimeZoneDB API.

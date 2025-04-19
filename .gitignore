@@ -3,3 +3,4 @@
 *.lst
 *.pdf
 /target/
+.env
