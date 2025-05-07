@@ -1,5 +1,6 @@
 package com.vaszilvalentin.educore.pages.subpages;
 
+import com.vaszilvalentin.educore.auth.AuthManager;
 import com.vaszilvalentin.educore.users.CurrentUserSelection;
 import com.vaszilvalentin.educore.users.User;
 import com.vaszilvalentin.educore.users.UserManager;
@@ -15,6 +16,7 @@ import java.util.List;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableRowSorter;
 
 /**
  * Admin user management panel that provides CRUD operations for user accounts.
@@ -28,16 +30,16 @@ import javax.swing.table.JTableHeader;
 public class ManageUsers extends JPanel {
 
     // UI Components
-    private JTable usersTable;
-    private DefaultTableModel tableModel;
-    private JTextField emailFilterField;
-    private JComboBox<String> roleFilterComboBox;
-    private JPanel filterPanel;
+    private JTable usersTable;                  // Table displaying user information
+    private DefaultTableModel tableModel;       // Data model for the users table
+    private JTextField emailFilterField;        // Field for filtering by email
+    private JComboBox<String> roleFilterComboBox; // Dropdown for filtering by role
+    private JPanel filterPanel;                 // Panel containing filter controls
     
-    // Dependencies
-    private final WindowManager windowManager;
+    // Application dependencies
+    private final WindowManager windowManager;  // Manages application window navigation
     
-    // Listener for theme changes
+    // Theme management
     private final PropertyChangeListener themeChangeListener = new ThemeChangeListener();
 
     /**
@@ -47,7 +49,7 @@ public class ManageUsers extends JPanel {
     public ManageUsers(WindowManager windowManager) {
         this.windowManager = windowManager;
 
-        // Set up the main panel layout and padding
+        // Configure panel layout with consistent padding
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(15, 15, 15, 15));
 
@@ -57,12 +59,16 @@ public class ManageUsers extends JPanel {
         initializeButtons();
         loadUserData();
 
-        // Register theme listener to maintain consistent styling
+        // Register for theme changes to maintain visual consistency
         UIManager.addPropertyChangeListener(themeChangeListener);
     }
 
     /**
      * Initializes the filter panel with email and role filter controls.
+     * Includes:
+     * - Email text field filter
+     * - Role dropdown filter
+     * - Apply filter button
      */
     private void initializeFilterPanel() {
         filterPanel = new JPanel(new GridBagLayout());
@@ -74,7 +80,7 @@ public class ManageUsers extends JPanel {
         );
         filterPanel.setBorder(border);
         
-        // Set up layout constraints
+        // Set up layout constraints for consistent component spacing
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);  // Uniform padding
         gbc.fill = GridBagConstraints.HORIZONTAL;  // Components expand horizontally
@@ -113,51 +119,50 @@ public class ManageUsers extends JPanel {
     }
 
     /**
-     * Initializes the user table with appropriate columns, renderers, and behaviors.
+     * Initializes the user table with proper sorting functionality.
+     * Configures:
+     * - Table model with column definitions
+     * - Row sorter for all columns
+     * - Custom cell rendering
+     * - Column sizing and visibility
      */
     private void initializeTable() {
         // Column headers for the table
         String[] columnNames = {"ID", "Name", "Email", "Role", "Class"};
         
-        // Custom table model to control editability and column types
+        // Table model with non-editable cells
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;  // Disable direct cell editing
             }
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                // Ensure proper sorting behavior by column type
-                return String.class;  // All columns contain string data
-            }
         };
 
-        // Configure table appearance and behavior
+        // Configure table with sorting enabled
         usersTable = new JTable(tableModel);
-        usersTable.setAutoCreateRowSorter(true);  // Enable column sorting
+        usersTable.setAutoCreateRowSorter(true);
+        
+        // Initialize and configure the row sorter
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+        usersTable.setRowSorter(sorter);
+        
+        // Table display properties
         usersTable.setRowHeight(30);  // Comfortable row height
         usersTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);  // Single row selection
         usersTable.setShowGrid(false);  // Cleaner look without grid lines
         usersTable.setIntercellSpacing(new Dimension(0, 0));  // Tight spacing
-
-        // Apply current theme colors
-        usersTable.setBackground(UIManager.getColor("Table.background"));
-        usersTable.setForeground(UIManager.getColor("Table.foreground"));
 
         // Hide the ID column (used internally but not displayed)
         usersTable.getColumnModel().getColumn(0).setMinWidth(0);
         usersTable.getColumnModel().getColumn(0).setMaxWidth(0);
         usersTable.getColumnModel().getColumn(0).setWidth(0);
 
-        // Custom cell renderer for consistent styling and alternating row colors
+        // Custom cell renderer for consistent styling
         DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
                     boolean isSelected, boolean hasFocus, int row, int column) {
-                // Handle row conversion for sorted tables
-                int modelRow = table.convertRowIndexToModel(row);
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, modelRow, column);
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 
                 // Center-align all cell content
                 setHorizontalAlignment(SwingConstants.CENTER);
@@ -168,7 +173,7 @@ public class ManageUsers extends JPanel {
                     setBackground(UIManager.getColor("Table.selectionBackground"));
                     setForeground(UIManager.getColor("Table.selectionForeground"));
                 } else {
-                    setBackground(modelRow % 2 == 0
+                    setBackground(row % 2 == 0
                             ? UIManager.getColor("Table.background")
                             : UIManager.getColor("Table.alternateRowColor"));
                     setForeground(UIManager.getColor("Table.foreground"));
@@ -209,7 +214,7 @@ public class ManageUsers extends JPanel {
         scrollPane.getViewport().setBackground(UIManager.getColor("Table.background"));
         add(scrollPane, BorderLayout.CENTER);
     }
-
+    
     /**
      * Initializes the action buttons panel with navigation and CRUD operations.
      */
@@ -270,10 +275,15 @@ public class ManageUsers extends JPanel {
 
     /**
      * Loads user data from UserManager and populates the table.
-     * Resets any existing sorting.
+     * Maintains any existing sorting during refresh.
      */
     private void loadUserData() {
-        tableModel.setRowCount(0);  // Clear existing data
+        // Save current sort state
+        RowSorter<?> sorter = usersTable.getRowSorter();
+        List<? extends RowSorter.SortKey> sortKeys = sorter != null ? sorter.getSortKeys() : null;
+        
+        // Clear existing data
+        tableModel.setRowCount(0);
         List<User> users = UserManager.getAllUsers();
 
         // Add each user as a row in the table
@@ -287,18 +297,26 @@ public class ManageUsers extends JPanel {
             });
         }
         
-        // Clear any existing sorting
-        usersTable.setRowSorter(null);
+        // Restore previous sort state if it existed
+        if (sortKeys != null && !sortKeys.isEmpty()) {
+            usersTable.getRowSorter().setSortKeys(sortKeys);
+        }
     }
 
     /**
      * Applies the current filter criteria to the user table.
-     * Filters by email (contains) and role (exact match).
+     * Filters by:
+     * - Email (contains text, case insensitive)
+     * - Role (exact match)
      */
     private void applyFilters() {
         String emailFilter = emailFilterField.getText().trim().toLowerCase();
         String roleFilter = (String) roleFilterComboBox.getSelectedItem();
 
+        // Save current sort state
+        RowSorter<?> sorter = usersTable.getRowSorter();
+        List<? extends RowSorter.SortKey> sortKeys = sorter != null ? sorter.getSortKeys() : null;
+        
         tableModel.setRowCount(0);  // Reset table
         List<User> users = UserManager.getAllUsers();
 
@@ -316,6 +334,11 @@ public class ManageUsers extends JPanel {
                     user.getClassId() != null ? user.getClassId() : "N/A"
                 });
             }
+        }
+        
+        // Restore previous sort state if it existed
+        if (sortKeys != null && !sortKeys.isEmpty()) {
+            usersTable.getRowSorter().setSortKeys(sortKeys);
         }
     }
 
@@ -342,7 +365,7 @@ public class ManageUsers extends JPanel {
         }
 
         // Pass the selected user ID to the edit form
-        String userId = (String) tableModel.getValueAt(selectedRow, 0);
+        String userId = (String) tableModel.getValueAt(usersTable.convertRowIndexToModel(selectedRow), 0);
         CurrentUserSelection.setEditUserId(userId);
         EditUserPanel.refreshCurrentInstance();
         windowManager.switchToPage("EditUser");
@@ -361,8 +384,9 @@ public class ManageUsers extends JPanel {
         }
 
         // Get user details for confirmation message
-        String userId = (String) tableModel.getValueAt(selectedRow, 0);
-        String userName = (String) tableModel.getValueAt(selectedRow, 1);
+        int modelRow = usersTable.convertRowIndexToModel(selectedRow);
+        String userId = (String) tableModel.getValueAt(modelRow, 0);
+        String userName = (String) tableModel.getValueAt(modelRow, 1);
 
         // Confirm deletion with the user
         int confirm = JOptionPane.showConfirmDialog(
@@ -374,7 +398,8 @@ public class ManageUsers extends JPanel {
 
         if (confirm == JOptionPane.YES_OPTION) {
             UserManager.deleteUser(userId);  // Perform deletion
-            tableModel.removeRow(selectedRow);  // Update UI
+            AuthManager.reloadUsers();
+            tableModel.removeRow(modelRow);  // Update UI
             JOptionPane.showMessageDialog(this, "User deleted successfully.");
         }
     }
@@ -392,7 +417,7 @@ public class ManageUsers extends JPanel {
         }
 
         // Pass the selected user ID to the details view
-        String userId = (String) tableModel.getValueAt(selectedRow, 0);
+        String userId = (String) tableModel.getValueAt(usersTable.convertRowIndexToModel(selectedRow), 0);
         CurrentUserSelection.setViewUserId(userId);
         ViewUserPanel.refreshCurrentInstance();
         windowManager.switchToPage("UserDetails");
@@ -412,6 +437,7 @@ public class ManageUsers extends JPanel {
             usersTable.repaint();
         }
         
+        // Update filter panel border
         Border border = BorderFactory.createTitledBorder(
                 BorderFactory.createMatteBorder(1, 1, 1, 1, UIManager.getColor("Panel.foreground")),
                 "Filter Users"

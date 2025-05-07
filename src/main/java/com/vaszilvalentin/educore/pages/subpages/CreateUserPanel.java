@@ -1,5 +1,6 @@
 package com.vaszilvalentin.educore.pages.subpages;
 
+import com.vaszilvalentin.educore.auth.AuthManager;
 import com.vaszilvalentin.educore.users.UserManager;
 import com.vaszilvalentin.educore.users.User;
 import com.vaszilvalentin.educore.users.Subject;
@@ -330,6 +331,7 @@ public class CreateUserPanel extends JPanel {
         // Create and save the user
         User newUser = userBuilder.build();
         UserManager.addUser(newUser);
+        AuthManager.reloadUsers();
         showMessage("User created successfully!");
         windowManager.switchToPage("ManageUsers");
     }

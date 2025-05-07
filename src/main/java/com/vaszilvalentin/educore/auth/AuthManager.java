@@ -68,5 +68,13 @@ public class AuthManager {
             Main.restartApplication(); // Only restart if not exiting
         }
     }
+    
+    /**
+     * Reload the list of users
+     */
+    
+    public static void reloadUsers() {
+        users = UserManager.getAllUsers();
+    }
 
 }

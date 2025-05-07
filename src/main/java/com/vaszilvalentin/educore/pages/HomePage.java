@@ -25,7 +25,6 @@ import javax.swing.UIManager;
  *
  * @author vaszilvalentin
  */
-
 /**
  * Home page panel, dynamically shows buttons depending on user role.
  */
@@ -67,9 +66,9 @@ public class HomePage extends javax.swing.JPanel {
     /**
      * Adds a navigation button to the button panel.
      *
-     * @param label      Text shown on the button
+     * @param label Text shown on the button
      * @param targetPage Target page to navigate to
-     * @param row        Grid row position for layout
+     * @param row Grid row position for layout
      */
     private void addNavButton(String label, String targetPage, int row) {
         JButton button = new JButton(label);
@@ -87,7 +86,8 @@ public class HomePage extends javax.swing.JPanel {
     }
 
     /**
-     * Creates and adds navigation buttons based on the role of the current user.
+     * Creates and adds navigation buttons based on the role of the current
+     * user.
      *
      * @param role Current user's role
      */
@@ -107,13 +107,16 @@ public class HomePage extends javax.swing.JPanel {
 
         } else if (role.equals("admin")) {
             addNavButton("Manage Users", "ManageUsers", row++);
-            addNavButton("Browse login logs", "LoginLogs", row++);
+            addNavButton("Student List", "StudentList", row++);
+            addNavButton("Teacher List", "TeacherList", row++);
+            addNavButton("Browse Login Logs", "LoginLogs", row++);
             addNavButton("My Profile", "Profile", row++);
         }
     }
 
     /**
-     * Updates the background and border of the container to match the current theme.
+     * Updates the background and border of the container to match the current
+     * theme.
      */
     private void updateContainerColor() {
         container.setBackground(UIManager.getColor("LoginForm.background"));
@@ -144,7 +147,8 @@ public class HomePage extends javax.swing.JPanel {
     }
 
     /**
-     * Called when the component is removed. Cleans up UI listeners to prevent memory leaks.
+     * Called when the component is removed. Cleans up UI listeners to prevent
+     * memory leaks.
      */
     @Override
     public void removeNotify() {

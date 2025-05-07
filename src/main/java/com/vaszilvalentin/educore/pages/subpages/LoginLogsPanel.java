@@ -80,9 +80,21 @@ public class LoginLogsPanel extends JPanel {
             public boolean isCellEditable(int row, int column) {
                 return false; // Make all cells read-only
             }
+            
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return String.class; // All columns contain string data
+            }
         };
 
         logsTable = new JTable(tableModel);
+        
+        // Enable sorting with proper initialization
+        logsTable.setAutoCreateRowSorter(true);
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+        logsTable.setRowSorter(sorter);
+        
+        // Configure table display properties
         logsTable.setRowHeight(30);
         logsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         logsTable.setShowGrid(false);
@@ -181,6 +193,10 @@ public class LoginLogsPanel extends JPanel {
      * @param emailFilter Text to filter email column (case-insensitive); null to show all.
      */
     private void loadLogsData(String emailFilter) {
+        // Save current sort state
+        RowSorter<?> sorter = logsTable.getRowSorter();
+        List<? extends RowSorter.SortKey> sortKeys = sorter != null ? sorter.getSortKeys() : null;
+        
         tableModel.setRowCount(0); // Clear existing data
 
         List<LoginLog> logs = LoginLogManager.getAllLogs();
@@ -198,6 +214,11 @@ public class LoginLogsPanel extends JPanel {
                     log.getAction().toString()
                 });
             }
+        }
+        
+        // Restore sort state if it existed
+        if (sortKeys != null && !sortKeys.isEmpty()) {
+            logsTable.getRowSorter().setSortKeys(sortKeys);
         }
     }
 

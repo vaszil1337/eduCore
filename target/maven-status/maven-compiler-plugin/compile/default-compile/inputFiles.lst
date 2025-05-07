@@ -32,6 +32,7 @@
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/pages/subpages/StudentListPanel.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/pages/subpages/TeacherAbsencePanel.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/pages/subpages/TeacherHomeworkPanel.java
+/Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/pages/subpages/TeacherListPanel.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/pages/subpages/ViewUserPanel.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/preference/PreferenceManager.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/preference/Theme.java
@@ -41,6 +42,7 @@
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/users/User.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/users/UserManager.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/utils/EncryptionUtils.java
+/Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/utils/ExampleDataGenerator.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/utils/HomeworkAutoGrader.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/utils/NetworkTimeChecker.java
 /Users/vaszilvalentin/Documents/GitHub/eduCore/src/main/java/com/vaszilvalentin/educore/utils/PDFExporter.java

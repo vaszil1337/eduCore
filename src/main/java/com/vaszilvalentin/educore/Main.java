@@ -3,6 +3,7 @@
  */
 package com.vaszilvalentin.educore;
 
+import com.vaszilvalentin.educore.utils.ExampleDataGenerator;
 import com.vaszilvalentin.educore.utils.HomeworkAutoGrader;
 import com.vaszilvalentin.educore.window.WindowManager;
 
@@ -16,6 +17,7 @@ public class Main {
 
     public static void main(String[] args) {
         startApplication();
+      //  ExampleDataGenerator.populateSystemWithExampleUsers(160, 20, 1);
         HomeworkAutoGrader.gradeAllOverdueHomework()
                 .thenRun(() -> System.out.println("Automatic grading completed"))
                 .exceptionally(ex -> {

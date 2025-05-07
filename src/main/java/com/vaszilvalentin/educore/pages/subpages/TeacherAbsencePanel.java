@@ -164,6 +164,14 @@ public class TeacherAbsencePanel extends JPanel {
             }
         });
 
+        // Delete button
+        rightPanel.add(new JButton("Delete") {
+            {
+                addActionListener(e -> handleDelete());
+                setToolTipText("Delete selected absence record");
+            }
+        });
+
         // New Add Absence button
         rightPanel.add(new JButton("Add Absence") {
             {
@@ -311,6 +319,69 @@ public class TeacherAbsencePanel extends JPanel {
 
         // Open document
         openSubmissionFile(cert.getFilePath());
+    }
+
+    /**
+     * Handles certificate deletion workflow: - Validates selection - Confirms
+     * with teacher - Deletes certificate if confirmed
+     */
+    private void handleDelete() {
+        // Validate selection
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            showMessage("Please select a certificate to delete.");
+            return;
+        }
+
+        // Retrieve certificate ID from the mapping
+        String certId = rowToCertificateIdMap.get(selectedRow);
+        if (certId == null) {
+            showError("Certificate ID not found for selected row!");
+            return;
+        }
+
+        // Get certificate details for confirmation dialog
+        AbsenceCertificate cert = AbsenceCertificateManager.getCertificateById(certId);
+        if (cert == null) {
+            showError("Certificate not found in the system!");
+            return;
+        }
+
+        // Get student information for confirmation message
+        User student = UserManager.getAllUsers().stream()
+                .filter(u -> u.getId().equals(cert.getUserId()))
+                .findFirst()
+                .orElse(null);
+
+        // Prepare confirmation message
+        String studentInfo = student != null
+                ? student.getName() + " (" + student.getClassId() + ")"
+                : "Student ID: " + cert.getUserId();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String dateRange = cert.getStartDate().format(formatter) + " to " + cert.getEndDate().format(formatter);
+
+        // Show confirmation dialog
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to permanently delete this absence certificate?\n\n"
+                + "Student: " + studentInfo + "\n"
+                + "Period: " + dateRange + "\n"
+                + "Type: " + (cert.hasType() ? cert.getCertificateType() : "Not specified"),
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        // Process deletion if confirmed
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                AbsenceCertificateManager.deleteCertificate(certId);
+                showMessage("Certificate deleted successfully.", "Deletion Complete", JOptionPane.INFORMATION_MESSAGE);
+                loadAllCertificates(); // Refresh the table
+            } catch (Exception e) {
+                showError("Failed to delete certificate: " + e.getMessage());
+            }
+        }
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.vaszilvalentin.educore.pages.subpages;
 
+import com.vaszilvalentin.educore.auth.AuthManager;
 import com.vaszilvalentin.educore.auth.CurrentUser;
 import com.vaszilvalentin.educore.users.User;
 import com.vaszilvalentin.educore.users.UserManager;
@@ -172,6 +173,7 @@ public class PasswordUpdate extends JPanel {
         );
 
         if (updated) {
+            AuthManager.reloadUsers();
             JOptionPane.showMessageDialog(this, "Password changed successfully!");
             windowManager.switchToPage("Profile");
         } else {

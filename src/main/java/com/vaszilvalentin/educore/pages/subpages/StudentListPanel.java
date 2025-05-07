@@ -1,5 +1,7 @@
 package com.vaszilvalentin.educore.pages.subpages;
 
+import com.vaszilvalentin.educore.auth.CurrentUser;
+import com.vaszilvalentin.educore.users.ClassLevel;
 import com.vaszilvalentin.educore.users.User;
 import com.vaszilvalentin.educore.users.UserManager;
 import com.vaszilvalentin.educore.utils.PDFExporter;
@@ -15,14 +17,13 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
- * The StudentListPanel class is a JPanel that allows teachers to select a class,
- * view a list of students from that class, and export the list to a PDF file.
- * It contains a dropdown to select the class, a table to display student data,
- * and buttons for navigating back to the home page and exporting data to PDF.
+ * The StudentListPanel class is a JPanel that allows teachers to select a
+ * class, view a list of students from that class, and export the list to a PDF
+ * file. It contains a dropdown to select the class, a table to display student
+ * data, and buttons for navigating back to the home page and exporting data to
+ * PDF.
  */
 public class StudentListPanel extends JPanel {
 
@@ -33,8 +34,8 @@ public class StudentListPanel extends JPanel {
     private final WindowManager windowManager;
 
     /**
-     * Constructor for the StudentListPanel.
-     * Initializes the UI and listens for theme changes.
+     * Constructor for the StudentListPanel. Initializes the UI and listens for
+     * theme changes.
      *
      * @param windowManager The WindowManager instance for page navigation
      */
@@ -89,36 +90,54 @@ public class StudentListPanel extends JPanel {
         JButton exportButton = new JButton("Export to PDF");
         exportButton.addActionListener(this::handleExport);
 
+        JButton exportLoginsButton = null;
+        User currentUser = CurrentUser.getCurrentUser();
+        if ("admin".equalsIgnoreCase(currentUser.getRole())) {
+            exportLoginsButton = new JButton("Export Logins to PDF");
+            exportLoginsButton.addActionListener(this::handleExportLogins);
+        }
+
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bottomPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
         bottomPanel.add(backButton);
         bottomPanel.add(exportButton);
+        if (exportLoginsButton != null) {
+            bottomPanel.add(exportLoginsButton);
+        }
         add(bottomPanel, BorderLayout.SOUTH);
 
         // Populate the class dropdown with available classes
         populateClassComboBox();
 
         // ActionListener to load students when a class is selected
-        classComboBox.addActionListener(e -> loadStudentsByClass((String) classComboBox.getSelectedItem()));
+        classComboBox.addActionListener(e -> {
+            String selected = (String) classComboBox.getSelectedItem();
+            if (selected != null && !selected.isEmpty()) {
+                loadStudentsByClass(selected);
+            }
+        });
     }
 
     /**
      * Populates the class selection dropdown with available class IDs.
-     * Retrieves unique class IDs from the users in the "student" role.
      */
     private void populateClassComboBox() {
-        Set<String> classIds = UserManager.getUsersByRole("student")
-                .stream()
-                .map(User::getClassId)
-                .filter(classId -> classId != null && !classId.isEmpty())
-                .collect(Collectors.toSet());
+        User currentUser = CurrentUser.getCurrentUser(); // 
+        List<String> taughtClasses = currentUser.getTaughtClasses();
 
-        // Add each classId to the dropdown
-        for (String classId : classIds) {
-            classComboBox.addItem(classId);
+        if(currentUser.getRole().equals("teacher")){
+            for (ClassLevel classLevel : ClassLevel.values()) {
+                if (taughtClasses.contains(classLevel.getDisplayName())) {
+                    classComboBox.addItem(classLevel.getDisplayName());
+                }
+            }
+        } else {
+            for (ClassLevel classLevel : ClassLevel.values()) {
+                classComboBox.addItem(classLevel.getDisplayName());
+            }
         }
+        
 
-        // If there is at least one class, select the first one automatically
         if (classComboBox.getItemCount() > 0) {
             classComboBox.setSelectedIndex(0);
             loadStudentsByClass((String) classComboBox.getSelectedItem());
@@ -152,8 +171,8 @@ public class StudentListPanel extends JPanel {
     }
 
     /**
-     * Handles the export button click event. Allows the user to select a file location
-     * and exports the student list to a PDF file.
+     * Handles the export button click event. Allows the user to select a file
+     * location and exports the student list to a PDF file.
      *
      * @param e The ActionEvent triggered by the export button click
      */
@@ -183,6 +202,39 @@ public class StudentListPanel extends JPanel {
             // Export the students to PDF using the PDFExporter class
             PDFExporter.exportStudentsByClassToPDF(students, classId, filePath);
             JOptionPane.showMessageDialog(this, "PDF successfully exported to:\n" + filePath, "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    /**
+     * Handles the export of student login data to a PDF file.
+     *
+     * @param e The ActionEvent triggered by the export logins button
+     */
+    private void handleExportLogins(ActionEvent e) {
+        String classId = (String) classComboBox.getSelectedItem();
+
+        if (classId == null || classId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No class selected.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        List<User> students = UserManager.getStudentsByClass(classId);
+        if (students.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "There are no students in the selected class.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Choose a location to save the PDF");
+        fileChooser.setSelectedFile(new java.io.File("student_logins_" + classId + ".pdf"));
+
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+
+            // Export login data to PDF
+            PDFExporter.exportStudentLoginsToPDF(students, filePath);
+            JOptionPane.showMessageDialog(this, "Login PDF successfully exported to:\n" + filePath, "Success", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

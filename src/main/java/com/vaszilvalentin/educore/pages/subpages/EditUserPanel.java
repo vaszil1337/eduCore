@@ -1,5 +1,6 @@
 package com.vaszilvalentin.educore.pages.subpages;
 
+import com.vaszilvalentin.educore.auth.AuthManager;
 import com.vaszilvalentin.educore.users.UserManager;
 import com.vaszilvalentin.educore.users.User;
 import com.vaszilvalentin.educore.users.Subject;
@@ -433,6 +434,7 @@ public class EditUserPanel extends JPanel {
 
         // Persist changes
         UserManager.updateUser(editableId, userToEdit);
+        AuthManager.reloadUsers();
         showMessage("User updated successfully!");
         windowManager.switchToPage("ManageUsers");
     }

@@ -32,6 +32,7 @@ import com.vaszilvalentin.educore.pages.subpages.ProfilePanel;
 import com.vaszilvalentin.educore.pages.subpages.StudentListPanel;
 import com.vaszilvalentin.educore.pages.subpages.TeacherAbsencePanel;
 import com.vaszilvalentin.educore.pages.subpages.TeacherHomeworkPanel;
+import com.vaszilvalentin.educore.pages.subpages.TeacherListPanel;
 import com.vaszilvalentin.educore.pages.subpages.ViewUserPanel;
 import com.vaszilvalentin.educore.preference.PreferenceManager;
 import com.vaszilvalentin.educore.preference.Theme;
@@ -223,6 +224,8 @@ public class WindowManager {
                 return new CreateAbsencePanel(this);
             case "StudentList":
                 return new StudentListPanel(this);
+            case "TeacherList":
+                return new TeacherListPanel(this);
             case "LoginLogs":
                 return new LoginLogsPanel(this);
             case "ManageUsers":
