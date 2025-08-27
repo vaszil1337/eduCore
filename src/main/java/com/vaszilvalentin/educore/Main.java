@@ -3,9 +3,13 @@
  */
 package com.vaszilvalentin.educore;
 
+import com.vaszilvalentin.educore.users.User;
+import com.vaszilvalentin.educore.users.UserManager;
 import com.vaszilvalentin.educore.utils.ExampleDataGenerator;
 import com.vaszilvalentin.educore.utils.HomeworkAutoGrader;
+import com.vaszilvalentin.educore.utils.PDFExporter;
 import com.vaszilvalentin.educore.window.WindowManager;
+import java.util.List;
 
 /**
  *
@@ -17,7 +21,18 @@ public class Main {
 
     public static void main(String[] args) {
         startApplication();
-      //  ExampleDataGenerator.populateSystemWithExampleUsers(160, 20, 1);
+        /*      
+        
+        Test data
+        
+        ExampleDataGenerator.populateSystemWithExampleUsers(160, 20, 1);
+        List<User> students = UserManager.getUsersByRole("student");
+        List<User> teachers = UserManager.getUsersByRole("teacher");
+        PDFExporter.exportStudentLoginsToPDF(students, "stud.pdf");
+        PDFExporter.exportTeacherLoginsToPDF(teachers, "teach.pdf");
+        
+         */
+        
         HomeworkAutoGrader.gradeAllOverdueHomework()
                 .thenRun(() -> System.out.println("Automatic grading completed"))
                 .exceptionally(ex -> {
