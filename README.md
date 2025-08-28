@@ -1,6 +1,6 @@
 # eduCore
 
-Több szerepkörös (student/teacher/admin) Java Swing asztali alkalmazás iskolai folyamatokhoz: bejelentkezés, szerepkör‑alapú navigáció, házi feladat‐kezelés és automatikus osztályzás, hiányzásigazolások, PDF export, valamint animált világos/sötét téma támogatás macOS finomhangolásokkal.
+Többszerepkörös (student/teacher/admin) Java Swing asztali alkalmazás iskolai folyamatokhoz: bejelentkezés, szerepkör‑alapú navigáció, házi feladat‐kezelés és automatikus osztályzás, hiányzásigazolások, PDF export, valamint animált világos/sötét téma támogatás macOS finomhangolásokkal.
 
 ## Tartalomjegyzék
 - Áttekintés
